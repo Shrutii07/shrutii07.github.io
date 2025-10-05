@@ -1,0 +1,25 @@
+---
+institution: "National Institute of Technology, Nagpur"
+degree: "Bachelor of Technology"
+field: "Electronics and Communication Engineering"
+startDate: "2018-06"
+endDate: "2022-05"
+location: "Nagpur, India"
+logo: "images/vnit-logo.png"
+gpa: "9.01/10.0"
+honors: ["Dean's List (4 semesters)", "Computer Science Honor Society"]
+coursework:
+  - "ECL 205: Object Oriented Programming"
+  - "MAL 206: Linear Algebra and Applications"
+  - "CSL 311: Computer Architecture and Organization"
+  - "CSL 312: Concepts in Operating Systems"
+  - "ECL 411: Digital Image Processing"
+  - "ECL 423: Image Analysis & Computer Vision"
+  - "IDL 401: Machine Learning"
+  - "MAL 408: Stastical Analysis and Queing Theory"
+thesis: "Automated Classification of sleep disorders and cyclic alternating pattern sleep phases using DL algorithms"
+advisors:
+  - name: "Dr. Ankit Bhurane"
+    googleScholar: "https://scholar.google.com/citations?user=8pDdSIsAAAAJ&hl=en"
+  - name: "Dr. Rajendra Acharya"
+    googleScholar: "https://scholar.google.com/citations?user=8FjY99sAAAAJ&hl=en"

@@ -1,0 +1,633 @@
+---
+import type { ExperienceData } from '../../content/config';
+import { formatDateRange, isValidDateFormat } from '../../utils/dateHelpers';
+
+export interface Props {
+  experience: {
+    slug: string;
+    data: ExperienceData;
+  };
+  isLast?: boolean;
+}
+
+const { experience, isLast = false } = Astro.props;
+const { data } = experience;
+
+// Validate and format dates with error handling
+let dateInfo;
+try {
+  if (!isValidDateFormat(data.startDate)) {
+    console.warn(`Invalid start date format for ${data.company}: ${data.startDate}`);
+  }
+  if (data.endDate && !isValidDateFormat(data.endDate)) {
+    console.warn(`Invalid end date format for ${data.company}: ${data.endDate}`);
+  }
+  
+  dateInfo = formatDateRange({
+    start: data.startDate,
+    end: data.endDate
+  });
+} catch (error) {
+  console.error(`Error formatting dates for ${data.company}:`, error);
+  dateInfo = {
+    startFormatted: data.startDate,
+    endFormatted: data.endDate || 'Present',
+    duration: 'Duration unknown'
+  };
+}
+
+// Enhanced logo handling with better fallback logic
+const hasLogo = data.logo && data.logo.trim() !== '';
+const logoSrc = hasLogo ? data.logo : null;
+
+// Generate fallback initials from company name
+const getCompanyInitials = (companyName: string): string => {
+  return companyName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join('');
+};
+
+const companyInitials = getCompanyInitials(data.company);
+
+// Validate achievements array
+const achievements = Array.isArray(data.achievements) ? data.achievements : [];
+const hasAchievements = achievements.length > 0;
+
+// Validate technologies array
+const technologies = Array.isArray(data.technologies) ? data.technologies : [];
+const hasTechnologies = technologies.length > 0;
+---
+
+<div class="timeline-item relative flex gap-4 sm:gap-6 pb-8 group" data-timeline-item>
+  <!-- Timeline connector -->
+  <div class="timeline-connector flex flex-col items-center flex-shrink-0">
+    <!-- Company logo circle -->
+    <div class="timeline-dot relative z-10 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-white dark:bg-gray-800 border-2 border-blue-500 shadow-lg">
+      {logoSrc ? (
+        <img 
+          src={`${import.meta.env.BASE_URL}/${logoSrc}`} 
+          alt={`${data.company} logo`}
+          class="h-12 w-12 sm:h-16 sm:w-16 rounded-full object-contain bg-white dark:bg-gray-100"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+      ) : null}
+      <div 
+        class={`h-12 w-12 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center ${logoSrc ? 'hidden' : 'flex'}`}
+        style={logoSrc ? 'display: none;' : ''}
+        title={`${data.company} logo`}
+      >
+        <span class="text-white text-sm sm:text-lg font-semibold">
+          {companyInitials}
+        </span>
+      </div>
+    </div>
+    
+    <!-- Connecting line -->
+    {!isLast && (
+      <div class="timeline-line w-0.5 flex-1 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+    )}
+  </div>
+
+  <!-- Content -->
+  <div class="timeline-content flex-1 min-w-0">
+    <!-- Header -->
+    <div class="mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+          {data.position}
+        </h3>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          {dateInfo.startFormatted} - {dateInfo.endFormatted} • {dateInfo.duration}
+        </div>
+      </div>
+      
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+        <div class="flex items-center gap-2">
+          {data.website ? (
+            <a 
+              href={data.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-lg font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+            >
+              {data.company}
+            </a>
+          ) : (
+            <span class="text-lg font-medium text-gray-800 dark:text-gray-200">
+              {data.company}
+            </span>
+          )}
+          <span class="text-gray-500 dark:text-gray-400">•</span>
+          <span class="text-gray-600 dark:text-gray-400">{data.location}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements -->
+    {hasAchievements && (
+      <div class="achievements-container">
+        <button 
+          class="achievements-toggle flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-3"
+          aria-expanded="false"
+          aria-controls={`achievements-${experience.slug}`}
+        >
+          <span>Key Achievements ({achievements.length})</span>
+          <svg 
+            class="achievements-icon w-4 h-4 transition-transform duration-200" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        
+        <div 
+          id={`achievements-${experience.slug}`}
+          class="achievements-list max-h-0 overflow-hidden transition-all duration-300 ease-in-out"
+        >
+          <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+            {achievements.map((achievement) => (
+              <li class="flex items-start gap-3">
+                <div class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
+                <span class="text-sm leading-relaxed">{achievement}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )}
+
+    <!-- Technologies -->
+    {hasTechnologies && (
+      <div class="mt-4">
+        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Technologies Used
+        </h4>
+        <div class="flex flex-wrap gap-2">
+          {technologies.map((tech) => (
+            <span class="tech-tag inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  // Enhanced timeline animations and interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const timelineItems = document.querySelectorAll('[data-timeline-item]');
+    
+    // Enhanced expandable achievements functionality with smooth transitions
+    timelineItems.forEach((item) => {
+      const toggle = item.querySelector('.achievements-toggle');
+      const list = item.querySelector('.achievements-list');
+      const icon = item.querySelector('.achievements-icon');
+      
+      if (toggle && list && icon) {
+        // Set initial state
+        const listElement = list as HTMLElement;
+        listElement.style.maxHeight = '0px';
+        listElement.style.opacity = '0';
+        
+        toggle.addEventListener('click', () => {
+          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+          
+          if (isExpanded) {
+            // Collapse with smooth animation
+            listElement.style.maxHeight = listElement.scrollHeight + 'px';
+            
+            // Force reflow
+            listElement.offsetHeight;
+            
+            listElement.style.maxHeight = '0px';
+            listElement.style.opacity = '0';
+            listElement.style.paddingTop = '0px';
+            listElement.style.paddingBottom = '0px';
+            
+            toggle.setAttribute('aria-expanded', 'false');
+            (icon as HTMLElement).style.transform = 'rotate(0deg)';
+            
+            // Add collapsed class for additional styling
+            item.classList.remove('expanded');
+          } else {
+            // Expand with smooth animation
+            listElement.style.maxHeight = listElement.scrollHeight + 'px';
+            listElement.style.opacity = '1';
+            listElement.style.paddingTop = '0.75rem';
+            listElement.style.paddingBottom = '0.5rem';
+            
+            toggle.setAttribute('aria-expanded', 'true');
+            (icon as HTMLElement).style.transform = 'rotate(180deg)';
+            
+            // Add expanded class for additional styling
+            item.classList.add('expanded');
+            
+            // Reset max-height after animation completes
+            setTimeout(() => {
+              if (toggle.getAttribute('aria-expanded') === 'true') {
+                listElement.style.maxHeight = 'none';
+              }
+            }, 300);
+          }
+        });
+      }
+    });
+
+    // Enhanced scroll-triggered animations with staggered effects
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -80px 0px'
+    };
+
+    const timelineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          const item = entry.target as HTMLElement;
+          
+          // Add staggered delay based on item position
+          const delay = index * 150;
+          
+          setTimeout(() => {
+            item.classList.add('animate-in');
+            
+            // Animate content with cascading effect
+            const content = item.querySelector('.timeline-content');
+            if (content) {
+              setTimeout(() => {
+                content.classList.add('animate-content');
+              }, 100);
+            }
+            
+            // Animate the timeline dot with enhanced effect
+            const dot = item.querySelector('.timeline-dot');
+            if (dot) {
+              setTimeout(() => {
+                dot.classList.add('animate-dot');
+              }, 200);
+            }
+            
+            // Animate the timeline line with draw effect
+            const line = item.querySelector('.timeline-line');
+            if (line) {
+              setTimeout(() => {
+                line.classList.add('animate-line');
+              }, 350);
+            }
+            
+            // Animate technologies tags if present
+            const techTags = item.querySelectorAll('.tech-tag');
+            techTags.forEach((tag, tagIndex) => {
+              setTimeout(() => {
+                tag.classList.add('animate-tag');
+              }, 500 + (tagIndex * 50));
+            });
+            
+          }, delay);
+          
+          timelineObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    timelineItems.forEach((item) => {
+      timelineObserver.observe(item);
+    });
+
+    // Enhanced responsive behavior
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 640;
+      
+      timelineItems.forEach((item) => {
+        if (isMobile) {
+          item.classList.add('mobile-layout');
+        } else {
+          item.classList.remove('mobile-layout');
+        }
+      });
+    };
+
+    // Initial resize check
+    handleResize();
+    
+    // Listen for resize events with debouncing
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 150);
+    });
+
+    // Add hover effects for better interactivity
+    timelineItems.forEach((item) => {
+      const dot = item.querySelector('.timeline-dot');
+      
+      item.addEventListener('mouseenter', () => {
+        if (dot) {
+          dot.classList.add('hover-effect');
+        }
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        if (dot) {
+          dot.classList.remove('hover-effect');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Enhanced timeline item animations */
+  .timeline-item {
+    opacity: 0;
+    transform: translateX(-40px) translateY(20px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+  }
+
+  .timeline-item.animate-in {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
+
+  /* Enhanced timeline content animations */
+  .timeline-content {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  }
+
+  .timeline-content.animate-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Enhanced timeline dot animations */
+  .timeline-dot {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.7);
+    opacity: 0.8;
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+
+  .timeline-dot.animate-dot {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Enhanced hover effects */
+  .timeline-dot.hover-effect {
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3), 0 0 0 12px rgba(59, 130, 246, 0.15);
+  }
+
+  /* Enhanced timeline line animation */
+  .timeline-line {
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .timeline-line.animate-line {
+    transform: scaleY(1);
+  }
+
+  /* Add a subtle glow effect to the line */
+  .timeline-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(59, 130, 246, 0.3), transparent);
+    transform: translateX(-50%) scaleY(0);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  }
+
+  .timeline-line.animate-line::after {
+    transform: translateX(-50%) scaleY(1);
+  }
+
+  /* Enhanced achievements list animations */
+  .achievements-list {
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease-in-out,
+                padding 0.3s ease-in-out;
+    overflow: hidden;
+  }
+
+  .achievements-toggle {
+    transition: color 0.2s ease, background-color 0.2s ease;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
+
+  .achievements-toggle:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  .achievements-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Technology tags animation */
+  .tech-tag {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tech-tag.animate-tag {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Enhanced mobile-specific adjustments */
+  @media (max-width: 640px) {
+    .timeline-item {
+      transform: translateY(30px);
+      gap: 1rem;
+    }
+
+    .timeline-item.animate-in {
+      transform: translateY(0);
+    }
+
+    .timeline-item.mobile-layout {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .timeline-item.mobile-layout .timeline-connector {
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    .timeline-item.mobile-layout .timeline-content {
+      flex: 1;
+      min-width: 0;
+      padding-left: 0;
+    }
+
+    .timeline-dot {
+      width: 3.5rem;
+      height: 3.5rem;
+      transform: scale(0.9);
+    }
+
+    .timeline-dot.animate-dot {
+      transform: scale(1);
+    }
+
+    /* Adjust spacing for mobile */
+    .timeline-item.mobile-layout .timeline-content h3 {
+      font-size: 1.125rem;
+    }
+
+    .timeline-item.mobile-layout .timeline-content .text-lg {
+      font-size: 1rem;
+    }
+
+    /* Stack date and company info on mobile */
+    .timeline-item.mobile-layout .flex.flex-col.sm\\:flex-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Enhanced tablet adjustments */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .timeline-item {
+      gap: 1.5rem;
+    }
+
+    .timeline-dot {
+      width: 4rem;
+      height: 4rem;
+    }
+
+    .timeline-content {
+      padding-left: 0.5rem;
+    }
+  }
+
+  /* Large screen optimizations */
+  @media (min-width: 1025px) {
+    .timeline-item {
+      gap: 2rem;
+    }
+
+    .timeline-item:hover {
+      transform: translateX(8px);
+    }
+
+    .timeline-item.animate-in:hover {
+      transform: translateX(8px) translateY(0);
+    }
+  }
+
+  /* Enhanced expanded state styling */
+  .timeline-item.expanded {
+    background-color: rgba(59, 130, 246, 0.02);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin: -1rem;
+    transition: all 0.3s ease;
+  }
+
+  .dark .timeline-item.expanded {
+    background-color: rgba(59, 130, 246, 0.05);
+  }
+
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-item,
+    .timeline-content,
+    .timeline-dot,
+    .timeline-line,
+    .achievements-list,
+    .achievements-icon,
+    .achievements-toggle,
+    .tech-tag {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      animation: none;
+    }
+    
+    .timeline-line::after {
+      transform: translateX(-50%) scaleY(1);
+      transition: none;
+    }
+
+    .timeline-dot.animate-dot,
+    .timeline-line.animate-line,
+    .timeline-content.animate-content,
+    .tech-tag.animate-tag {
+      transform: none;
+    }
+
+    .timeline-item:hover {
+      transform: none;
+    }
+  }
+
+  /* Enhanced focus states for accessibility */
+  .achievements-toggle:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  .timeline-item:focus-within .timeline-dot {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .timeline-dot {
+      border-width: 3px;
+      border-color: currentColor;
+    }
+    
+    .timeline-line {
+      background-color: currentColor;
+      width: 3px;
+    }
+
+    .timeline-item.expanded {
+      border: 2px solid currentColor;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .timeline-item {
+      opacity: 1;
+      transform: none;
+      break-inside: avoid;
+    }
+
+    .achievements-list {
+      max-height: none !important;
+      opacity: 1 !important;
+    }
+
+    .achievements-toggle {
+      display: none;
+    }
+  }
+</style>

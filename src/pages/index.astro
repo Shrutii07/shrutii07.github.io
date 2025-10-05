@@ -1,0 +1,42 @@
+---
+// Main portfolio page with header navigation
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Hero from '../components/sections/Hero.astro';
+import Skills from '../components/sections/Skills.astro';
+import Projects from '../components/sections/Projects.astro';
+import Publications from '../components/sections/Publications.astro';
+import Experience from '../components/sections/Experience.astro';
+import Education from '../components/sections/Education.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout title="ML Engineer Portfolio">
+  <Header />
+  
+  <!-- Main content with sections for navigation testing -->
+  <main class="pt-16"> <!-- Padding top to account for fixed header -->
+    
+    <!-- Hero Section -->
+    <Hero />
+
+    <!-- Experience Section -->
+    <Experience />
+
+    <!-- Education Section -->
+    <Education />
+
+    <!-- Projects Section -->
+    <Projects />
+
+    <!-- Skills Section -->
+    <Skills />
+
+    <!-- Publications Section -->
+    <Publications />
+
+    <!-- Contact Section -->
+    <Contact />
+
+  </main>
+</BaseLayout>

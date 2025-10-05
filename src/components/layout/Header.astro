@@ -1,0 +1,293 @@
+---
+// Header.astro - Fixed navigation header with smooth scroll links and mobile menu
+import ThemeToggle from '../ui/ThemeToggle.astro';
+---
+
+<header 
+  id="header"
+  class="fixed top-0 left-0 right-0 z-50 bg-background bg-opacity-80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300"
+>
+  <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo/Brand -->
+      <div class="flex-shrink-0">
+        <a 
+          href="#hero" 
+          class="text-xl font-bold text-text hover:text-primary transition-colors duration-300"
+          aria-label="Go to top"
+        >
+          ML Portfolio
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-8">
+          <a 
+            href="#hero" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="hero"
+          >
+            Home
+          </a>
+          <a 
+            href="#experience" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="experience"
+          >
+            Experience
+          </a>
+          <a 
+            href="#education" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="education"
+          >
+            Education
+          </a>
+          <a 
+            href="#projects" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="projects"
+          >
+            Projects
+          </a>
+          <a 
+            href="#skills" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="skills"
+          >
+            Skills
+          </a>
+          <a 
+            href="#publications" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="publications"
+          >
+            Publications
+          </a>
+          <a 
+            href="#contact" 
+            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
+            data-section="contact"
+          >
+            Contact
+          </a>
+        </div>
+      </div>
+
+      <!-- Theme Toggle and Mobile Menu Button -->
+      <div class="flex items-center space-x-4">
+        <!-- Theme Toggle -->
+        <ThemeToggle />
+        
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <button
+            id="mobile-menu-button"
+            type="button"
+            class="inline-flex items-center justify-center p-2 rounded-lg text-text-muted hover:text-primary hover:bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background transition-all duration-300"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            aria-label="Toggle navigation menu"
+          >
+            <!-- Hamburger icon -->
+            <svg 
+              id="hamburger-icon"
+              class="block h-6 w-6 transition-transform duration-300" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <!-- Close icon -->
+            <svg 
+              id="close-icon"
+              class="hidden h-6 w-6 transition-transform duration-300" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div 
+      id="mobile-menu" 
+      class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
+    >
+      <div class="px-2 pt-2 pb-3 space-y-1 bg-surface bg-opacity-50 backdrop-blur-sm rounded-lg mt-2 border border-gray-200 dark:border-gray-700">
+        <a 
+          href="#hero" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="hero"
+        >
+          Home
+        </a>
+        <a 
+          href="#experience" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="experience"
+        >
+          Experience
+        </a>
+        <a 
+          href="#education" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="education"
+        >
+          Education
+        </a>
+        <a 
+          href="#projects" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="projects"
+        >
+          Projects
+        </a>
+        <a 
+          href="#skills" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="skills"
+        >
+          Skills
+        </a>
+        <a 
+          href="#publications" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="publications"
+        >
+          Publications
+        </a>
+        <a 
+          href="#contact" 
+          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+          data-section="contact"
+        >
+          Contact
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  import { initializeNavigation } from '../../utils/navigation';
+  
+  // Mobile menu toggle functionality
+  function initMobileMenu() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+    
+    if (!mobileMenuButton || !mobileMenu || !hamburgerIcon || !closeIcon) return;
+    
+    let isMenuOpen = false;
+    
+    function toggleMobileMenu() {
+      if (!mobileMenu || !hamburgerIcon || !closeIcon || !mobileMenuButton) return;
+      
+      isMenuOpen = !isMenuOpen;
+      
+      if (isMenuOpen) {
+        // Open menu
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+        mobileMenu.classList.remove('opacity-0');
+        mobileMenu.classList.add('opacity-100');
+        hamburgerIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        mobileMenuButton.setAttribute('aria-expanded', 'true');
+      } else {
+        // Close menu
+        mobileMenu.style.maxHeight = '0';
+        mobileMenu.classList.remove('opacity-100');
+        mobileMenu.classList.add('opacity-0');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+      }
+    }
+    
+    // Toggle menu on button click
+    mobileMenuButton.addEventListener('click', toggleMobileMenu);
+    
+    // Close menu when clicking on mobile nav links
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (isMenuOpen) {
+          toggleMobileMenu();
+        }
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+      if (isMenuOpen && !mobileMenuButton.contains(event.target as Node) && !mobileMenu.contains(event.target as Node)) {
+        toggleMobileMenu();
+      }
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && isMenuOpen) {
+        toggleMobileMenu();
+      }
+    });
+  }
+  
+  // Initialize all functionality
+  function initHeader() {
+    initMobileMenu();
+    initializeNavigation();
+  }
+  
+  // Initialize header functionality
+  document.addEventListener('DOMContentLoaded', initHeader);
+  
+  // Also initialize immediately in case DOMContentLoaded already fired
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeader);
+  } else {
+    initHeader();
+  }
+</script>
+
+<style>
+  /* Additional styles for header backdrop blur and mobile menu animations */
+  #header {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* Smooth transitions for mobile menu */
+  #mobile-menu {
+    transition: max-height 300ms ease-in-out, opacity 300ms ease-in-out;
+  }
+  
+  /* Active navigation link styles */
+  .nav-link.active,
+  .mobile-nav-link.active {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+  
+  /* Hover effects for navigation links */
+  .nav-link:hover,
+  .mobile-nav-link:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Focus styles for accessibility */
+  .nav-link:focus-visible,
+  .mobile-nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+</style>

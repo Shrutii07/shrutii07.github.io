@@ -1,0 +1,190 @@
+---
+import { getCollection } from 'astro:content';
+
+// Get all education entries and sort by start date (most recent first)
+const educationEntries = await getCollection('education');
+const sortedEducation = educationEntries.sort((a, b) => {
+  const dateA = new Date(a.data.startDate);
+  const dateB = new Date(b.data.startDate);
+  return dateB.getTime() - dateA.getTime();
+});
+
+// Helper function to format date
+function formatDate(dateString: string): string {
+  const parts = dateString.split('-');
+  const year = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1; // Month is 0-indexed in JavaScript
+  const date = new Date(year, month, 1);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long' 
+  });
+}
+
+// Helper function to calculate duration
+function calculateDuration(startDate: string, endDate?: string): string {
+  // Parse dates more reliably by adding day component
+  const startParts = startDate.split('-');
+  const start = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, 1); // Month is 0-indexed
+  
+  let end: Date;
+  if (endDate) {
+    const endParts = endDate.split('-');
+    end = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, 1);
+  } else {
+    end = new Date();
+  }
+  
+  const years = end.getFullYear() - start.getFullYear();
+  const months = end.getMonth() - start.getMonth();
+  
+  const totalMonths = years * 12 + months;
+  
+  if (totalMonths < 12) {
+    return `${totalMonths} month${totalMonths !== 1 ? 's' : ''}`;
+  } else {
+    const displayYears = Math.floor(totalMonths / 12);
+    const remainingMonths = totalMonths % 12;
+    
+    if (remainingMonths === 0) {
+      return `${displayYears} year${displayYears !== 1 ? 's' : ''}`;
+    } else {
+      return `${displayYears} year${displayYears !== 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
+    }
+  }
+}
+---
+
+<section id="education" class="py-8 md:py-12 bg-gray-50 dark:bg-gray-900/50">
+  <div class="container mx-auto px-4 md:px-6 max-w-6xl">
+    <!-- Section Header -->
+    <div class="text-center mb-6">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        Education
+      </h2>
+    </div>
+
+    <!-- Education Timeline -->
+    <div class="space-y-4">
+      {sortedEducation.map((education) => (
+        <div class="education-item flex gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <!-- Institution Logo -->
+          <div class="flex-shrink-0">
+            {education.data.logo ? (
+              <img 
+                src={`${import.meta.env.BASE_URL}/${education.data.logo}`} 
+                alt={`${education.data.institution} logo`}
+                class="w-12 h-12 object-contain rounded-lg bg-gray-100 dark:bg-gray-700 p-1"
+                loading="lazy"
+              />
+            ) : (
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+              </div>
+            )}
+          </div>
+          
+          <!-- Education Details -->
+          <div class="flex-grow min-w-0">
+            <!-- Header Row -->
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+              <div class="flex-grow">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                  {education.data.degree} in {education.data.field}
+                </h3>
+                <p class="text-base font-semibold text-blue-600 dark:text-blue-400">
+                  {education.data.institution}
+                </p>
+              </div>
+              <div class="flex-shrink-0 text-sm text-gray-600 dark:text-gray-300">
+                {formatDate(education.data.startDate)} - {education.data.endDate ? formatDate(education.data.endDate) : 'Present'}
+              </div>
+            </div>
+
+            <!-- Location and Duration -->
+            <div class="flex flex-wrap items-center gap-4 mb-3 text-sm text-gray-600 dark:text-gray-300">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                {education.data.location}
+              </span>
+              <span class="text-gray-500 dark:text-gray-400">
+                ({calculateDuration(education.data.startDate, education.data.endDate)})
+              </span>
+            </div>
+
+            <!-- Details Row -->
+            <div class="flex flex-wrap items-center gap-4 mb-3">
+              {education.data.gpa && (
+                <span class="flex items-center gap-1 text-sm">
+                  <span class="font-medium text-gray-700 dark:text-gray-300">GPA:</span>
+                  <span class="font-semibold text-green-600 dark:text-green-400">
+                    {education.data.gpa}
+                  </span>
+                </span>
+              )}
+              
+              {education.data.honors && education.data.honors.length > 0 && (
+                <div class="flex flex-wrap gap-1">
+                  {education.data.honors.slice(0, 2).map((honor) => (
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
+                      {honor}
+                    </span>
+                  ))}
+                  {education.data.honors.length > 2 && (
+                    <span class="text-xs text-gray-500 dark:text-gray-400">+{education.data.honors.length - 2} more</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <!-- Thesis -->
+            {education.data.thesis && (
+              <div class="mb-3">
+                <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+                  <span class="font-medium">Thesis:</span> "{education.data.thesis}"
+                </p>
+              </div>
+            )}
+
+            <!-- Coursework -->
+            {education.data.coursework && education.data.coursework.length > 0 && (
+              <div>
+                <div class="flex flex-wrap gap-1">
+                  {education.data.coursework.slice(0, 6).map((course) => (
+                    <span class="inline-block px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 rounded">
+                      {course}
+                    </span>
+                  ))}
+                  {education.data.coursework.length > 6 && (
+                    <span class="text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5">
+                      +{education.data.coursework.length - 6} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .education-card {
+    /* Removed animations for faster response times */
+    opacity: 1;
+    transform: none;
+  }
+
+  .education-card:hover {
+    /* Minimal hover effect for performance */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
+</style>

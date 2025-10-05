@@ -1,0 +1,802 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from '../ui/ProjectCard.astro';
+import type { ProjectData } from '../../content/config';
+
+// Get projects data from content collection with comprehensive error handling
+let projectEntries;
+let projects: (ProjectData & { slug: string })[] = [];
+let contentLoadError: string | null = null;
+
+try {
+  projectEntries = await getCollection('projects');
+  
+  if (!projectEntries || projectEntries.length === 0) {
+    console.warn('No projects found in content collection');
+    contentLoadError = 'No projects found';
+  } else {
+    // Process, validate, and sort projects
+    projects = projectEntries
+      .map(entry => {
+        // Validate required fields
+        const data = entry.data;
+        if (!data.title || !data.description) {
+          console.warn(`Project ${entry.slug} missing required fields`);
+          return null;
+        }
+        
+        return {
+          ...data,
+          slug: entry.slug,
+          // Provide fallbacks for optional fields
+          image: data.image || 'test-image.png',
+          tags: data.tags || [],
+          featured: data.featured ?? false,
+          order: data.order ?? 999,
+          award: data.award,
+          hackathon: data.hackathon,
+          teamSize: data.teamSize,
+          paper: data.paper,
+          paperTitle: data.paperTitle,
+          venue: data.venue
+        };
+      })
+      .filter((project): project is NonNullable<typeof project> => project !== null)
+      // Show all projects for now (all are marked as featured anyway)
+      // .filter(project => project.featured)
+      .sort((a, b) => {
+        // First, prioritize featured projects
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        
+        // Then sort by order field (lower numbers first)
+        return (a.order || 0) - (b.order || 0);
+      });
+    
+    console.log(`Loaded ${projects.length} featured projects`);
+  }
+} catch (error) {
+  console.error('Failed to load projects collection:', error);
+  contentLoadError = error instanceof Error ? error.message : 'Unknown error loading projects';
+}
+
+// Fallback projects if none are found
+const fallbackProjects: (ProjectData & { slug: string })[] = [
+  {
+    slug: 'sample-project-1',
+    title: 'Machine Learning Project',
+    description: 'A comprehensive machine learning project showcasing advanced algorithms and real-world applications.',
+    image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop',
+    github: 'https://github.com/example/ml-project',
+    demo: 'https://ml-project-demo.vercel.app',
+    featured: true,
+    order: 1,
+    tags: ['Python', 'TensorFlow', 'Machine Learning', 'Data Science'],
+    startDate: '2023-01',
+    endDate: '2023-06'
+  },
+  {
+    slug: 'sample-project-2',
+    title: 'Computer Vision Application',
+    description: 'Real-time computer vision system for object detection and classification using deep learning.',
+    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop',
+    github: 'https://github.com/example/cv-project',
+    featured: true,
+    order: 2,
+    tags: ['Python', 'OpenCV', 'Computer Vision', 'Deep Learning'],
+    startDate: '2023-06',
+    endDate: '2023-12'
+  },
+  {
+    slug: 'sample-project-3',
+    title: 'NLP Sentiment Analysis',
+    description: 'Advanced natural language processing system for sentiment analysis and text classification.',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop',
+    demo: 'https://nlp-demo.herokuapp.com',
+    featured: true,
+    order: 3,
+    tags: ['Python', 'NLP', 'BERT', 'Transformers'],
+    startDate: '2022-09',
+    endDate: '2023-03'
+  }
+];
+
+// Content validation and fallback logic
+function validateProjectData(project: ProjectData & { slug: string }): boolean {
+  // Required fields validation
+  if (!project.title?.trim() || !project.description?.trim()) {
+    return false;
+  }
+  
+  // URL validation for optional fields
+  if (project.github && !isValidUrl(project.github)) {
+    console.warn(`Invalid GitHub URL for project ${project.slug}: ${project.github}`);
+    project.github = undefined;
+  }
+  
+  if (project.demo && !isValidUrl(project.demo)) {
+    console.warn(`Invalid demo URL for project ${project.slug}: ${project.demo}`);
+    project.demo = undefined;
+  }
+  
+  return true;
+}
+
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Apply validation to loaded projects
+const validatedProjects = projects.filter(validateProjectData);
+
+// Use validated projects or fallback
+const displayProjects = validatedProjects.length > 0 ? validatedProjects : fallbackProjects;
+
+// Limit to maximum of 6 featured projects for better layout
+const featuredProjects = displayProjects.slice(0, 6);
+
+// Generate content statistics
+const contentStats = {
+  totalProjects: projects.length,
+  featuredProjects: featuredProjects.length,
+  hasGithubLinks: featuredProjects.filter(p => p.github).length,
+  hasDemoLinks: featuredProjects.filter(p => p.demo).length,
+  uniqueTechnologies: Array.from(new Set(featuredProjects.flatMap(p => p.tags))).length,
+  contentSource: validatedProjects.length > 0 ? 'markdown' : 'fallback'
+};
+---
+
+<section id="projects" class="py-8 sm:py-12 md:py-16 bg-background">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <!-- Section Header -->
+    <div class="section-header text-center mb-6 sm:mb-8">
+      <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-text mb-4">
+        Projects
+      </h2>
+
+      <!-- Content Source Indicator (for development) -->
+      {contentStats.contentSource === 'fallback' && (
+        <div class="mt-4 text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 px-3 py-1 rounded-full inline-block">
+          Using sample data - Add projects to src/content/projects/
+        </div>
+      )}
+
+      {contentLoadError && (
+        <div class="mt-4 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full inline-block">
+          Content load error: {contentLoadError}
+        </div>
+      )}
+    </div>
+
+    <!-- Projects Grid -->
+    {featuredProjects.length > 0 ? (
+      <div>
+        <!-- First 3 Projects (Always Visible) -->
+        <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+          {featuredProjects.slice(0, 3).map((project, index) => (
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              image={project.image}
+              github={project.github}
+              demo={project.demo}
+              tags={project.tags}
+              index={index}
+              award={project.award}
+              hackathon={project.hackathon}
+              teamSize={project.teamSize}
+              paper={project.paper}
+              paperTitle={project.paperTitle}
+              venue={project.venue}
+            />
+          ))}
+        </div>
+
+        <!-- Additional Projects (Hidden by Default) -->
+        {featuredProjects.length > 3 && (
+          <div class="additional-projects max-h-0 overflow-hidden transition-all duration-500 ease-in-out opacity-0">
+            <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mt-6">
+              {featuredProjects.slice(3).map((project, index) => (
+                <ProjectCard
+                  title={project.title}
+                  description={project.description}
+                  image={project.image}
+                  github={project.github}
+                  demo={project.demo}
+                  tags={project.tags}
+                  index={index + 3}
+                  award={project.award}
+                  hackathon={project.hackathon}
+                  teamSize={project.teamSize}
+                  paper={project.paper}
+                  paperTitle={project.paperTitle}
+                  venue={project.venue}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- View All Projects Button -->
+        {featuredProjects.length > 3 && (
+          <div class="text-center mt-8">
+            <button
+              class="view-all-btn inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white font-medium rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              aria-expanded="false"
+            >
+              <span class="btn-text">View All Projects ({featuredProjects.length})</span>
+              <svg 
+                class="btn-icon w-4 h-4 transition-transform duration-200" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <!-- Empty State -->
+      <div class="text-center py-12">
+        <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-text mb-2">No Projects Found</h3>
+        <p class="text-text-muted">Projects will appear here once they are added to the content collection.</p>
+      </div>
+    )}
+
+
+
+
+  </div>
+</section>
+
+<style>
+  .section-header {
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .section-header.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .projects-grid {
+    /* Removed opacity: 0 to prevent projects from being invisible if animation fails */
+    /* opacity: 0; */
+    /* transform: translateY(20px); */
+    /* animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; */
+    /* animation-delay: 300ms; */
+  }
+
+  .projects-grid.animate-in {
+    animation-play-state: running;
+  }
+
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Expandable projects styles */
+  .additional-projects {
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.5s ease-in-out,
+                padding 0.5s ease-in-out;
+  }
+
+  .additional-projects.expanded {
+    opacity: 1;
+    padding-top: 0;
+  }
+
+  .view-all-btn {
+    transition: all 0.3s ease;
+  }
+
+  .view-all-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-icon {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .view-all-btn[aria-expanded="true"] .btn-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Responsive grid adjustments */
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  /* Enhanced grid layout for different project counts */
+  .projects-grid:has(.project-card:nth-child(4):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects-grid:has(.project-card:nth-child(5):last-child) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  @media (min-width: 1025px) {
+    .projects-grid:has(.project-card:nth-child(4):last-child) {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .projects-grid:has(.project-card:nth-child(5):last-child) {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .projects-grid:has(.project-card:nth-child(5):last-child) .project-card:nth-child(5) {
+      grid-column: 1 / -1;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .section-header,
+    .projects-grid {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Focus management for keyboard navigation */
+  .projects-grid:focus-within {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: 12px;
+  }
+
+  /* Loading state for images */
+  .projects-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Enhanced hover effects for technology tags */
+  .mt-16 span:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .mt-16 span:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Parallax effect for project cards */
+  .projects-grid {
+    perspective: 1000px;
+  }
+
+  .project-card {
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  }
+
+  .project-card:hover {
+    transform: translateY(-8px) scale(1.02) rotateX(5deg);
+  }
+
+  /* Magnetic effect for interactive elements */
+  .magnetic {
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+  }
+
+  /* Grid animation entrance */
+  .projects-grid.animate-in .project-card {
+    animation-play-state: running;
+  }
+
+  /* Loading skeleton animation */
+  .loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  .dark .loading-skeleton {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+</style>
+
+<script>
+  // Expandable projects functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewAllBtn = document.querySelector('.view-all-btn');
+    const additionalProjects = document.querySelector('.additional-projects');
+    const btnText = document.querySelector('.btn-text');
+    
+    if (viewAllBtn && additionalProjects && btnText) {
+      const additionalElement = additionalProjects as HTMLElement;
+      const totalProjects = document.querySelectorAll('.projects-grid .project-card').length;
+      
+      viewAllBtn.addEventListener('click', () => {
+        const isExpanded = viewAllBtn.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          // Collapse
+          additionalElement.style.maxHeight = additionalElement.scrollHeight + 'px';
+          
+          // Force reflow
+          additionalElement.offsetHeight;
+          
+          additionalElement.style.maxHeight = '0px';
+          additionalElement.classList.remove('expanded');
+          
+          viewAllBtn.setAttribute('aria-expanded', 'false');
+          btnText.textContent = `View All Projects (${totalProjects})`;
+        } else {
+          // Expand
+          additionalElement.style.maxHeight = additionalElement.scrollHeight + 'px';
+          additionalElement.classList.add('expanded');
+          
+          viewAllBtn.setAttribute('aria-expanded', 'true');
+          btnText.textContent = 'Show Less';
+          
+          // Reset max-height after animation completes
+          setTimeout(() => {
+            if (viewAllBtn.getAttribute('aria-expanded') === 'true') {
+              additionalElement.style.maxHeight = 'none';
+            }
+          }, 500);
+        }
+      });
+    }
+  });
+
+  // Enhanced Intersection Observer for scroll-triggered animations
+  if (typeof window !== 'undefined') {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    let animationTriggered = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !animationTriggered) {
+          animationTriggered = true;
+          const projectsSection = entry.target as HTMLElement;
+          
+          // Animate section header first
+          const header = projectsSection.querySelector('.section-header');
+          if (header) {
+            header.classList.add('animate-in');
+          }
+
+          // Animate projects grid
+          const grid = projectsSection.querySelector('.projects-grid');
+          if (grid) {
+            setTimeout(() => {
+              grid.classList.add('animate-in');
+            }, 200);
+          }
+
+          // Add stagger animation to project cards
+          const projectCards = projectsSection.querySelectorAll('.project-card');
+          projectCards.forEach((card, index) => {
+            const cardElement = card as HTMLElement;
+            setTimeout(() => {
+              cardElement.style.animationDelay = `${index * 150}ms`;
+              cardElement.classList.add('animate-in');
+            }, 400 + (index * 100));
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Image lazy loading and error handling
+    function initImageHandling() {
+      const projectImages = document.querySelectorAll('.project-image');
+      
+      projectImages.forEach((img) => {
+        const imgElement = img as HTMLImageElement;
+        
+        // Add loading state
+        imgElement.addEventListener('loadstart', () => {
+          imgElement.style.opacity = '0.5';
+        });
+        
+        // Remove loading state when loaded
+        imgElement.addEventListener('load', () => {
+          imgElement.style.opacity = '1';
+        });
+        
+        // Handle image errors with fallback
+        imgElement.addEventListener('error', () => {
+          const fallbackUrl = `${import.meta.env.BASE_URL}/test-image.png`;
+          if (imgElement.src !== fallbackUrl) {
+            imgElement.src = fallbackUrl;
+          }
+        });
+      });
+    }
+
+    // Enhanced keyboard navigation
+    function initKeyboardNavigation() {
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      projectCards.forEach((card, index) => {
+        const cardElement = card as HTMLElement;
+        cardElement.setAttribute('tabindex', '0');
+        cardElement.setAttribute('role', 'article');
+        cardElement.setAttribute('aria-label', `Project ${index + 1}`);
+        
+        // Add keyboard interaction
+        cardElement.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const firstLink = cardElement.querySelector('a');
+            if (firstLink) {
+              firstLink.click();
+            }
+          }
+        });
+      });
+    }
+
+    // Technology filter functionality (disabled - was causing projects to disappear)
+    function initTechnologyFilter() {
+      // Disabled to prevent projects from disappearing
+      // The filter was making projects semi-transparent and causing confusion
+      console.log('Technology filter disabled to prevent project visibility issues');
+    }
+
+    // Initialize when DOM is ready - SIMPLIFIED VERSION
+    document.addEventListener('DOMContentLoaded', () => {
+      const projectsSection = document.getElementById('projects');
+      if (projectsSection) {
+        observer.observe(projectsSection);
+        // Only enable basic image handling - disable other effects that might cause issues
+        initImageHandling();
+        // initKeyboardNavigation(); // Disabled temporarily
+        // initTechnologyFilter(); // Disabled - was causing projects to disappear
+      }
+    });
+
+    // Cleanup observer on page unload
+    window.addEventListener('beforeunload', () => {
+      observer.disconnect();
+    });
+
+    // Performance optimization: Preload critical images
+    function preloadCriticalImages() {
+      const criticalImages = document.querySelectorAll('.project-image');
+      criticalImages.forEach((img, index) => {
+        if (index < 3) { // Preload first 3 images
+          const imgElement = img as HTMLImageElement;
+          const preloadLink = document.createElement('link');
+          preloadLink.rel = 'preload';
+          preloadLink.as = 'image';
+          preloadLink.href = imgElement.src;
+          document.head.appendChild(preloadLink);
+        }
+      });
+    }
+
+    // Magnetic effect for interactive elements
+    function initMagneticEffect() {
+      const magneticElements = document.querySelectorAll('.project-card, .mt-16 span');
+      
+      magneticElements.forEach((element) => {
+        const el = element as HTMLElement;
+        el.classList.add('magnetic');
+        
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          const moveX = x * 0.1;
+          const moveY = y * 0.1;
+          
+          el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+        
+        el.addEventListener('mouseleave', () => {
+          el.style.transform = '';
+        });
+      });
+    }
+
+    // Parallax scrolling effect
+    function initParallaxEffect() {
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * -0.5;
+        
+        projectCards.forEach((card, index) => {
+          const cardElement = card as HTMLElement;
+          const offset = (index % 2 === 0 ? 1 : -1) * rate * 0.1;
+          cardElement.style.transform = `translateY(${offset}px)`;
+        });
+      });
+    }
+
+    // Advanced loading states
+    function initLoadingStates() {
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      projectCards.forEach((card) => {
+        const cardElement = card as HTMLElement;
+        const img = cardElement.querySelector('.project-image') as HTMLImageElement;
+        
+        if (img) {
+          // Add loading skeleton
+          img.classList.add('loading-skeleton');
+          
+          img.addEventListener('load', () => {
+            img.classList.remove('loading-skeleton');
+            cardElement.classList.add('loaded');
+          });
+          
+          img.addEventListener('error', () => {
+            img.classList.remove('loading-skeleton');
+            cardElement.classList.add('error');
+          });
+        }
+      });
+    }
+
+    // Initialize preloading - SIMPLIFIED VERSION
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        preloadCriticalImages();
+        // initMagneticEffect(); // Disabled - might cause transform conflicts
+        // initParallaxEffect(); // Disabled - might cause transform conflicts  
+        // initLoadingStates(); // Disabled - might cause opacity conflicts
+      });
+    } else {
+      preloadCriticalImages();
+      // initMagneticEffect(); // Disabled - might cause transform conflicts
+      // initParallaxEffect(); // Disabled - might cause transform conflicts
+      // initLoadingStates(); // Disabled - might cause opacity conflicts
+    }
+
+    // Content refresh functionality (for development)
+    function initContentRefresh() {
+      // Add keyboard shortcut for content refresh (Ctrl+R in projects section)
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'r' && document.getElementById('projects')?.contains(document.activeElement)) {
+          e.preventDefault();
+          console.log('Refreshing projects content...');
+          window.location.reload();
+        }
+      });
+    }
+
+    // Analytics and tracking for project interactions
+    function initProjectAnalytics() {
+      const projectLinks = document.querySelectorAll('.project-card a');
+      
+      projectLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const projectCard = (e.target as HTMLElement).closest('.project-card');
+          const projectTitle = projectCard?.querySelector('h3')?.textContent;
+          const linkType = link.textContent?.includes('Code') ? 'github' : 'demo';
+          
+          // Log interaction (replace with actual analytics)
+          console.log(`Project interaction: ${projectTitle} - ${linkType}`);
+          
+          // Optional: Send to analytics service
+          // analytics.track('project_link_click', { project: projectTitle, type: linkType });
+        });
+      });
+    }
+
+    // Content validation feedback
+    function initContentValidation() {
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      projectCards.forEach((card) => {
+        const cardElement = card as HTMLElement;
+        const img = cardElement.querySelector('img') as HTMLImageElement;
+        const links = cardElement.querySelectorAll('a');
+        
+        // Validate image loading
+        if (img) {
+          img.addEventListener('error', () => {
+            console.warn(`Failed to load image for project: ${cardElement.querySelector('h3')?.textContent}`);
+          });
+        }
+        
+        // Validate external links
+        links.forEach((link) => {
+          const url = link.getAttribute('href');
+          if (url && url.startsWith('http')) {
+            // Optional: Ping URL to check if it's accessible
+            // This would be done server-side in a real application
+          }
+        });
+      });
+    }
+
+    // Initialize all features
+    document.addEventListener('DOMContentLoaded', () => {
+      initContentRefresh();
+      initProjectAnalytics();
+      initContentValidation();
+    });
+
+    // Respect reduced motion preferences
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Disable parallax and magnetic effects
+      const style = document.createElement('style');
+      style.textContent = `
+        .magnetic { transition: none !important; }
+        .project-card:hover { transform: none !important; }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+</script>

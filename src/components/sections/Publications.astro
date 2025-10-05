@@ -1,0 +1,276 @@
+---
+import { getCollection } from 'astro:content';
+
+// Get all publications and sort by year (newest first)
+const publications = await getCollection('publications');
+const sortedPublications = publications.sort((a, b) => b.data.year - a.data.year);
+
+// Group publications by type
+const publicationsByType = sortedPublications.reduce((acc, pub) => {
+  const type = pub.data.type;
+  if (!acc[type]) {
+    acc[type] = [];
+  }
+  acc[type].push(pub);
+  return acc;
+}, {} as Record<string, typeof publications>);
+
+// Define type display names and order
+const typeOrder = ['journal', 'conference', 'patent', 'preprint'];
+const typeDisplayNames = {
+  journal: 'Journal Publications',
+  conference: 'Conference Papers',
+  patent: 'Patents',
+  preprint: 'Preprints'
+};
+
+// Helper function to format authors
+function formatAuthors(authors: string[], maxDisplay: number = 3): string {
+  if (authors.length <= maxDisplay) {
+    return authors.join(', ');
+  }
+  return `${authors.slice(0, maxDisplay).join(', ')}, et al.`;
+}
+
+// Helper function to get publication type badge color
+function getTypeBadgeColor(type: string): string {
+  const colors = {
+    journal: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+    conference: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+    patent: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+    preprint: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+  };
+  return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300';
+}
+---
+
+<section id="publications" class="py-8 md:py-12">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <!-- Section Header -->
+    <div class="text-center mb-6">
+      <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        Publications
+      </h2>
+    </div>
+
+    <!-- Publications by Type -->
+    <div class="space-y-6">
+      {typeOrder.map(type => {
+        const pubs = publicationsByType[type];
+        if (!pubs || pubs.length === 0) return null;
+        
+        return (
+          <div class="publication-type-section">
+            <!-- Type Header -->
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+              <span class={`px-2 py-0.5 rounded text-xs font-medium ${getTypeBadgeColor(type)}`}>
+                {pubs.length}
+              </span>
+              {typeDisplayNames[type as keyof typeof typeDisplayNames]}
+            </h3>
+
+            <!-- Publications List -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              {pubs.map((publication, index) => (
+                <article 
+                  class="publication-item bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-300"
+                  style={`animation-delay: ${index * 100}ms`}
+                >
+                  <!-- Publication Header -->
+                  <div class="mb-3">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-1 leading-tight line-clamp-2">
+                      {publication.data.url ? (
+                        <a 
+                          href={publication.data.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 inline-flex items-start gap-1"
+                        >
+                          {publication.data.title}
+                          <svg class="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      ) : (
+                        publication.data.title
+                      )}
+                    </h4>
+                    
+                    <!-- Authors -->
+                    <p class="text-xs text-gray-600 dark:text-gray-300 mb-1">
+                      {formatAuthors(publication.data.authors, 2)}
+                    </p>
+                    
+                    <!-- Venue and Year -->
+                    <p class="text-xs text-gray-700 dark:text-gray-200 font-medium">
+                      {publication.data.venue} ({publication.data.year})
+                    </p>
+                  </div>
+
+                  <!-- Publication Links -->
+                  <div class="flex flex-wrap items-center gap-2 text-xs">
+                    {publication.data.url && (
+                      <a 
+                        href={publication.data.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
+                      >
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Paper
+                      </a>
+                    )}
+                    
+                    {publication.data.doi && (
+                      <a 
+                        href={`https://doi.org/${publication.data.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+                      >
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        DOI
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Empty State -->
+    {sortedPublications.length === 0 && (
+      <div class="text-center py-12">
+        <div class="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-600">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No Publications Yet</h3>
+        <p class="text-gray-600 dark:text-gray-400">Publications will appear here once added to the content directory.</p>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  // Abstract toggle functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const abstractToggles = document.querySelectorAll('.abstract-toggle');
+    
+    abstractToggles.forEach((toggle) => {
+      const content = toggle.parentElement?.querySelector('.abstract-content');
+      const icon = toggle.querySelector('.abstract-icon');
+      
+      if (content && icon) {
+        const contentElement = content as HTMLElement;
+        const iconElement = icon as HTMLElement;
+        
+        // Set initial state
+        contentElement.style.maxHeight = '0px';
+        contentElement.style.opacity = '0';
+        contentElement.style.paddingTop = '0px';
+        contentElement.style.paddingBottom = '0px';
+        
+        toggle.addEventListener('click', () => {
+          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+          
+          if (isExpanded) {
+            // Collapse
+            contentElement.style.maxHeight = contentElement.scrollHeight + 'px';
+            
+            // Force reflow
+            contentElement.offsetHeight;
+            
+            contentElement.style.maxHeight = '0px';
+            contentElement.style.opacity = '0';
+            contentElement.style.paddingTop = '0px';
+            contentElement.style.paddingBottom = '0px';
+            
+            toggle.setAttribute('aria-expanded', 'false');
+            iconElement.style.transform = 'rotate(0deg)';
+          } else {
+            // Expand
+            contentElement.style.maxHeight = contentElement.scrollHeight + 'px';
+            contentElement.style.opacity = '1';
+            contentElement.style.paddingTop = '0px';
+            contentElement.style.paddingBottom = '0.5rem';
+            
+            toggle.setAttribute('aria-expanded', 'true');
+            iconElement.style.transform = 'rotate(180deg)';
+            
+            // Reset max-height after animation completes
+            setTimeout(() => {
+              if (toggle.getAttribute('aria-expanded') === 'true') {
+                contentElement.style.maxHeight = 'none';
+              }
+            }, 400);
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .publication-item {
+    /* Removed animations for faster response times */
+    opacity: 1;
+    transform: none;
+  }
+
+  .publication-type-section {
+    opacity: 1;
+  }
+
+  /* Abstract toggle styles */
+  .abstract-toggle {
+    transition: color 0.2s ease !important;
+    border-radius: 0.375rem;
+    padding: 0.25rem;
+    margin: -0.25rem;
+  }
+
+  .abstract-toggle:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  .abstract-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .abstract-content {
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important,
+                opacity 0.3s ease-in-out !important,
+                padding 0.3s ease-in-out !important;
+    overflow: hidden;
+  }
+
+  /* Hover effects for publication items */
+  .publication-item:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Focus styles for accessibility */
+  .abstract-toggle:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  /* Line clamp utility for titles */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

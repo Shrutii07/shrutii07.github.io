@@ -1,0 +1,26 @@
+{
+  "name": "ml-engineer-portfolio",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "npm run validate:content && astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "./deploy.sh",
+    "validate:content": "node scripts/validate-content.js",
+    "validate:content:watch": "node scripts/validate-content.js --watch"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.3",
+    "@astrojs/tailwind": "^5.1.1",
+    "astro": "^4.15.12",
+    "gray-matter": "^4.0.3",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5"
+  }
+}
