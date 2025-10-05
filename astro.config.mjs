@@ -4,8 +4,7 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind()],
-  site: 'https://username.github.io',
-  base: '/ml-engineer-portfolio',
+  site: 'https://shrutii07.github.io',
   output: 'static',
   build: {
     assets: 'assets'
