@@ -25,17 +25,20 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Clear npm cache and config
+      - name: Setup npm without authentication
         run: |
-          npm config delete registry || true
+          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=" >> ~/.npmrc
+          npm config set registry https://registry.npmjs.org/
           npm config delete //registry.npmjs.org/:_authToken || true
-          npm cache clean --force
           
-      - name: Install dependencies
-        run: npm install --no-optional --no-audit --no-fund
+      - name: Install dependencies with yarn
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile || yarn install
         
       - name: Build with Astro
-        run: npm run build
+        run: yarn build
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
