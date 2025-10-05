@@ -20,37 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install, build, and upload your site
+        uses: withastro/action@v2
         with:
-          node-version: '18'
-          
-      - name: Setup npm without authentication
-        run: |
-          echo "registry=https://registry.npmjs.org/" > ~/.npmrc
-          echo "//registry.npmjs.org/:_authToken=" >> ~/.npmrc
-          npm config set registry https://registry.npmjs.org/
-          npm config delete //registry.npmjs.org/:_authToken || true
-          
-      - name: Install dependencies with yarn
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile || yarn install
-        
-      - name: Build with Astro
-        run: yarn build
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+          path: .
+          node-version: 18
+          package-manager: npm@latest
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
