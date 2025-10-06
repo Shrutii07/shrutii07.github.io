@@ -48,6 +48,13 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.command }}
         
+      - name: Fix Rollup optional dependencies
+        run: |
+          # Remove package-lock.json and node_modules to fix Rollup optional dependencies issue
+          rm -f package-lock.json
+          rm -rf node_modules
+          npm install
+        
       - name: Build with Astro
         run: |
           npx astro build \
