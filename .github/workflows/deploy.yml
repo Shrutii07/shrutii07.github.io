@@ -28,15 +28,21 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Clean npm setup
+      - name: Clean npm environment
         run: |
+          # Remove any existing npm config
           rm -f ~/.npmrc
           rm -f .npmrc
+          # Clear all npm config
+          npm config delete registry || true
+          npm config delete @*:registry || true
+          # Set clean registry
           npm config set registry https://registry.npmjs.org/
-          npm config delete //registry.npmjs.org/:_authToken || true
+          # Show config for debugging
+          npm config list
           
       - name: Install dependencies
-        run: npm install --registry https://registry.npmjs.org/ --no-fund --no-audit
+        run: npm install --registry=https://registry.npmjs.org/ --no-optional --no-fund --no-audit
         
       - name: Build project
         run: npm run build
