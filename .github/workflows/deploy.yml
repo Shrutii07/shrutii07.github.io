@@ -47,14 +47,22 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
         
-      - name: Clear npm config and install dependencies
+      - name: Setup npm and install dependencies
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+          NPM_CONFIG_ALWAYS_AUTH: false
         run: |
-          # Remove any existing npm config
+          # Remove any existing npm config files
           rm -f ~/.npmrc
-          # Clear npm cache
+          rm -f .npmrc
+          # Create a clean .npmrc
+          echo "registry=https://registry.npmjs.org/" > .npmrc
+          echo "always-auth=false" >> .npmrc
+          # Clear npm cache and config
           npm cache clean --force
-          # Install without authentication
-          npm install --no-optional --no-fund --no-audit
+          npm config delete //registry.npmjs.org/:_authToken || true
+          # Install dependencies
+          npm install --registry=https://registry.npmjs.org/
         
       - name: Build with Astro
         run: |
