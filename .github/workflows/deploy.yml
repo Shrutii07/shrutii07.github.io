@@ -40,8 +40,6 @@ jobs:
         with:
           node-version: "18"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@shrutii07'
           
       - name: Setup Pages
         id: pages
@@ -49,8 +47,6 @@ jobs:
         
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.command }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Build with Astro
         run: |
