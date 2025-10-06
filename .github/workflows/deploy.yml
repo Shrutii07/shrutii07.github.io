@@ -47,15 +47,18 @@ jobs:
         id: pages
         uses: actions/configure-pages@v4
         
-      - name: Install dependencies
+      - name: Clear npm config and install dependencies
         run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config delete //registry.npmjs.org/:_authToken || true
-          ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+          # Remove any existing npm config
+          rm -f ~/.npmrc
+          # Clear npm cache
+          npm cache clean --force
+          # Install without authentication
+          npm install --no-optional --no-fund --no-audit
         
       - name: Build with Astro
         run: |
-          ${{ steps.detect-package-manager.outputs.runner }} astro build \
+          npx astro build \
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
             
