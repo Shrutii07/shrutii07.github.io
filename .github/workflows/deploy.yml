@@ -42,27 +42,17 @@ jobs:
         with:
           node-version: "18"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@shrutii07'
           
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
         
-      - name: Setup npm and install dependencies
+      - name: Install dependencies
+        run: ${{ steps.detect-package-manager.outputs.runner }} ${{ steps.detect-package-manager.outputs.command }}
         env:
-          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
-          NPM_CONFIG_ALWAYS_AUTH: false
-        run: |
-          # Remove any existing npm config files
-          rm -f ~/.npmrc
-          rm -f .npmrc
-          # Create a clean .npmrc
-          echo "registry=https://registry.npmjs.org/" > .npmrc
-          echo "always-auth=false" >> .npmrc
-          # Clear npm cache and config
-          npm cache clean --force
-          npm config delete //registry.npmjs.org/:_authToken || true
-          # Install dependencies
-          npm install --registry=https://registry.npmjs.org/
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Build with Astro
         run: |
