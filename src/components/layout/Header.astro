@@ -13,7 +13,9 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       <div class="flex-shrink-0">
         <a 
           href="#hero" 
-          class="text-xl font-bold text-text hover:text-primary transition-colors duration-300"
+          id="logo-text"
+          class="logo-text text-xl font-bold transition-colors duration-300"
+          style="color: #1e293b;"
           aria-label="Go to top"
         >
           SM_
@@ -235,15 +237,50 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     initializeNavigation();
   }
   
+  // Logo color fix for dark mode
+  function fixLogoColor() {
+    const logo = document.getElementById('logo-text') as HTMLElement;
+    if (logo) {
+      const isDark = document.documentElement.classList.contains('dark');
+      const color = isDark ? '#ffffff' : '#1e293b';
+      logo.style.color = color;
+      logo.style.setProperty('color', color, 'important');
+      console.log('Logo color set to:', color, 'Dark mode:', isDark);
+    }
+  }
+  
   // Initialize header functionality
-  document.addEventListener('DOMContentLoaded', initHeader);
+  document.addEventListener('DOMContentLoaded', () => {
+    initHeader();
+    fixLogoColor();
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(() => {
+      setTimeout(fixLogoColor, 10); // Small delay to ensure DOM is updated
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // Also fix logo color periodically
+    setInterval(fixLogoColor, 1000);
+  });
   
   // Also initialize immediately in case DOMContentLoaded already fired
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeader);
+    document.addEventListener('DOMContentLoaded', () => {
+      initHeader();
+      fixLogoColor();
+    });
   } else {
     initHeader();
+    fixLogoColor();
   }
+  
+  // Run immediately
+  setTimeout(fixLogoColor, 100);
 </script>
 
 <style>
@@ -277,5 +314,30 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+  
+  /* Ensure logo color works in all scenarios */
+  #logo-text,
+  .logo-text {
+    color: #1e293b !important;
+    transition: color 0.3s ease;
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .dark #logo-text,
+  .dark .logo-text {
+    color: #ffffff !important;
+  }
+  
+  html.dark #logo-text,
+  html.dark .logo-text {
+    color: #ffffff !important;
+  }
+  
+  #logo-text:hover,
+  .logo-text:hover {
+    color: var(--color-primary) !important;
   }
 </style>

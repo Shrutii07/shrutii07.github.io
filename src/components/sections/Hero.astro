@@ -297,10 +297,17 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
       visibility: visible !important;
       opacity: 1 !important;
       min-height: 100vh !important;
+    }
+    
+    /* Light mode background */
+    html:not(.dark) #hero {
       background: white !important;
     }
     
-    .dark #hero {
+    /* Dark mode background - more specific selectors */
+    html.dark #hero,
+    .dark #hero,
+    body.dark #hero {
       background: #0f172a !important;
     }
     
@@ -321,16 +328,72 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
       visibility: visible !important;
     }
     
-    /* Ensure text is visible */
-    h1, h2, p, span {
+    /* Ensure text is visible in light mode */
+    html:not(.dark) #hero h1,
+    html:not(.dark) #hero h2,
+    html:not(.dark) #hero p,
+    html:not(.dark) #hero span {
       color: #1e293b !important;
     }
     
-    .dark h1,
-    .dark h2,
-    .dark p,
-    .dark span {
+    /* Ensure text is visible in dark mode */
+    html.dark #hero h1,
+    html.dark #hero h2,
+    html.dark #hero p,
+    html.dark #hero span,
+    .dark #hero h1,
+    .dark #hero h2,
+    .dark #hero p,
+    .dark #hero span,
+    body.dark #hero h1,
+    body.dark #hero h2,
+    body.dark #hero p,
+    body.dark #hero span {
       color: #f1f5f9 !important;
+    }
+  }
+
+  /* Protect social media icons from cleanup */
+  #hero a[target="_blank"],
+  #hero svg,
+  .social-link,
+  .group {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Additional mobile dark mode fixes */
+  @media (max-width: 768px) {
+    /* Force background colors with higher specificity */
+    body:not(.dark) #hero,
+    html:not(.dark) body #hero {
+      background: white !important;
+      background-color: white !important;
+    }
+    
+    body.dark #hero,
+    html.dark body #hero,
+    .dark body #hero {
+      background: #0f172a !important;
+      background-color: #0f172a !important;
+    }
+    
+    /* Force text colors with higher specificity */
+    body:not(.dark) #hero *,
+    html:not(.dark) body #hero * {
+      color: #1e293b !important;
+    }
+    
+    body.dark #hero *,
+    html.dark body #hero *,
+    .dark body #hero * {
+      color: #f1f5f9 !important;
+    }
+    
+    /* Ensure the section itself has proper background */
+    #hero.bg-gradient-to-br {
+      background: inherit !important;
     }
   }
 </style>
@@ -599,8 +662,9 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
   document.addEventListener('DOMContentLoaded', () => {
     nukeFloatingElements(); // Remove any floating elements
     aggressiveCleanup(); // Remove any existing floating elements
-    setInterval(nukeFloatingElements, 100); // Clean up every 100ms
-    setInterval(aggressiveCleanup, 100); // Double cleanup
+    // Reduce cleanup frequency to avoid interfering with UI
+    setInterval(nukeFloatingElements, 5000); // Clean up every 5 seconds
+    setInterval(aggressiveCleanup, 5000); // Less frequent cleanup
     initTypewriter();
     initImageErrorHandling();
     initRotatingTitles();

@@ -33,33 +33,48 @@
           return originalSetInterval.call(this, callback, delay);
         };
         
-        // Aggressive cleanup on page load
+        // Specific cleanup for code particles only
         function nukeFloatingContent() {
-          // Remove any divs with technical content
-          const allDivs = document.querySelectorAll('div');
-          allDivs.forEach(el => {
+          // Only remove elements with the code-particle class
+          const codeParticles = document.querySelectorAll('.code-particle');
+          codeParticles.forEach(el => {
+            console.log('Removed code particle:', el.textContent?.substring(0, 50));
+            el.remove();
+          });
+          
+          // Only remove divs that are clearly code particles (not legitimate UI)
+          const suspiciousDivs = document.querySelectorAll('div[style*="position: fixed"], div[style*="position: absolute"]');
+          suspiciousDivs.forEach(el => {
             const text = (el.textContent || '').toLowerCase();
-            const style = el.getAttribute('style') || '';
+            const className = el.className || '';
             
-            if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
-                (text.includes('tensorflow') || text.includes('model.fit') || 
-                 text.includes('pd.dataframe') || text.includes('cv2.imread') ||
-                 text.includes('plt.scatter') || text.includes('sklearn') ||
-                 text.includes('torch') || text.includes('numpy') ||
-                 text.includes('import ') || text.includes('accuracy_score'))) {
-              console.log('Removed floating element with technical content:', text.substring(0, 50));
+            // Skip legitimate UI elements
+            if (className.includes('quote-widget') || 
+                className.includes('easter-egg') || 
+                className.includes('cursor-trail') ||
+                className.includes('social') ||
+                el.id === 'quote-widget' ||
+                el.id === 'easter-egg-trigger' ||
+                el.closest('#hero') ||
+                el.closest('.social-link')) {
+              return; // Don't touch legitimate UI
+            }
+            
+            // Only remove if it contains technical terms AND is floating
+            if (text.includes('tensorflow') || text.includes('model.fit') || 
+                text.includes('pd.dataframe') || text.includes('cv2.imread') ||
+                text.includes('plt.scatter') || text.includes('sklearn') ||
+                text.includes('torch') || text.includes('numpy') ||
+                text.includes('import ') || text.includes('accuracy_score')) {
+              console.log('Removed floating technical element:', text.substring(0, 50));
               el.remove();
             }
           });
-          
-          // Also remove elements with the code-particle class
-          const codeParticles = document.querySelectorAll('.code-particle');
-          codeParticles.forEach(el => el.remove());
         }
         
-        // Run cleanup immediately and repeatedly
+        // Run cleanup immediately and less frequently
         nukeFloatingContent();
-        const cleanupInterval = setInterval(nukeFloatingContent, 50);
+        const cleanupInterval = setInterval(nukeFloatingContent, 2000); // Every 2 seconds instead of 50ms
         
         // Run cleanup when DOM is ready
         if (document.readyState === 'loading') {
@@ -69,14 +84,14 @@
         // Also run cleanup on window load
         window.addEventListener('load', nukeFloatingContent);
         
-        // Run cleanup when page becomes visible (in case of cached content)
-        document.addEventListener('visibilitychange', function() {
-          if (!document.hidden) {
-            nukeFloatingContent();
-          }
-        });
+        // Don't run cleanup on visibility change to avoid interfering with social icons
+        // document.addEventListener('visibilitychange', function() {
+        //   if (!document.hidden) {
+        //     nukeFloatingContent();
+        //   }
+        // });
       })();
-    </script><link rel="stylesheet" href="/assets/index.C7yfQQZ7.css">
+    </script><link rel="stylesheet" href="/assets/index.Bjyh7m0K.css">
 <style>@keyframes float{0%,to{transform:translateY(0)}50%{transform:translateY(-10px)}}.animate-pulse[data-astro-cid-zetdm5md]{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}
 </style></head> <body class="bg-background text-text transition-colors duration-300"> <!-- IMMEDIATE CODE PARTICLE KILLER --> <script>
       // Run immediately to prevent any code particles

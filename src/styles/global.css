@@ -517,10 +517,39 @@ body > div:not([class]):not([id]) {
   
   /* Ensure hero section is always visible */
   #hero,
-  #hero * {
+  #hero *,
+  #hero a[target="_blank"],
+  #hero svg,
+  .social-link {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+  }
+  
+  /* Protect social media icons specifically */
+  a[href*="github.com"],
+  a[href*="linkedin.com"],
+  a[href*="twitter.com"],
+  a[href*="scholar.google.com"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Protect logo text specifically */
+  .logo-text,
+  header .logo-text,
+  #header .logo-text {
+    color: #1e293b !important;
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .dark .logo-text,
+  .dark header .logo-text,
+  .dark #header .logo-text {
+    color: #ffffff !important;
   }
 }
 
@@ -870,6 +899,32 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
   #hero .flex-col {
     display: flex !important;
     flex-direction: column !important;
+  }
+  
+  /* Ensure dark mode works on mobile - more specific selectors */
+  html:not(.dark) #hero {
+    background-color: white !important;
+  }
+  
+  html.dark #hero,
+  .dark #hero,
+  body.dark #hero {
+    background-color: #0f172a !important;
+  }
+  
+  /* Ensure text colors work properly on mobile */
+  html:not(.dark) #hero,
+  html:not(.dark) #hero * {
+    color: #1e293b !important;
+  }
+  
+  html.dark #hero,
+  html.dark #hero *,
+  .dark #hero,
+  .dark #hero *,
+  body.dark #hero,
+  body.dark #hero * {
+    color: #f1f5f9 !important;
   }
   
   /* Ensure proper touch targets */
