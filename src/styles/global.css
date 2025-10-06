@@ -902,13 +902,37 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
   }
   
   /* Ensure dark mode works on mobile - more specific selectors */
-  html:not(.dark) #hero {
+  html:not(.dark) #hero,
+  html:not(.dark) #experience,
+  html:not(.dark) #education,
+  html:not(.dark) #projects,
+  html:not(.dark) #publications,
+  html:not(.dark) #skills,
+  html:not(.dark) #contact {
     background-color: white !important;
   }
   
   html.dark #hero,
+  html.dark #experience,
+  html.dark #education,
+  html.dark #projects,
+  html.dark #publications,
+  html.dark #skills,
+  html.dark #contact,
   .dark #hero,
-  body.dark #hero {
+  .dark #experience,
+  .dark #education,
+  .dark #projects,
+  .dark #publications,
+  .dark #skills,
+  .dark #contact,
+  body.dark #hero,
+  body.dark #experience,
+  body.dark #education,
+  body.dark #projects,
+  body.dark #publications,
+  body.dark #skills,
+  body.dark #contact {
     background-color: #0f172a !important;
   }
   
@@ -925,6 +949,17 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
   body.dark #hero,
   body.dark #hero * {
     color: #f1f5f9 !important;
+  }
+  
+  /* Ensure all sections have consistent backgrounds */
+  html:not(.dark) section {
+    background-color: white !important;
+  }
+  
+  html.dark section,
+  .dark section,
+  body.dark section {
+    background-color: #0f172a !important;
   }
   
   /* Ensure proper touch targets */
