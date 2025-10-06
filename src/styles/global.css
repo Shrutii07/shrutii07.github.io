@@ -130,6 +130,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Explicit background overrides for production */
+html {
+  background-color: white !important;
+}
+
+html.dark,
+.dark {
+  background-color: #0f172a !important;
+}
+
+html.dark body,
+.dark body,
+body.dark {
+  background-color: #0f172a !important;
+}
+
+html:not(.dark) body,
+body:not(.dark) {
+  background-color: white !important;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
@@ -936,6 +957,26 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
     background-color: #0f172a !important;
   }
   
+  /* Extra specificity for projects section */
+  html.dark #projects.bg-background,
+  .dark #projects.bg-background,
+  body.dark #projects.bg-background {
+    background-color: #0f172a !important;
+  }
+  
+  /* Override Hero section gradient background */
+  html.dark #hero,
+  .dark #hero,
+  body.dark #hero {
+    background: #0f172a !important;
+    background-image: none !important;
+  }
+  
+  html:not(.dark) #hero {
+    background: white !important;
+    background-image: none !important;
+  }
+  
   /* Ensure text colors work properly on mobile */
   html:not(.dark) #hero,
   html:not(.dark) #hero * {
@@ -951,15 +992,42 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
     color: #f1f5f9 !important;
   }
   
-  /* Ensure all sections have consistent backgrounds */
-  html:not(.dark) section {
+  /* Ensure all sections have consistent backgrounds - MAXIMUM SPECIFICITY */
+  html:not(.dark) section,
+  html:not(.dark) section[id],
+  html:not(.dark) main section,
+  html:not(.dark) main section[id] {
     background-color: white !important;
   }
   
   html.dark section,
+  html.dark section[id],
+  html.dark main section,
+  html.dark main section[id],
   .dark section,
-  body.dark section {
+  .dark section[id],
+  .dark main section,
+  .dark main section[id],
+  body.dark section,
+  body.dark section[id],
+  body.dark main section,
+  body.dark main section[id] {
     background-color: #0f172a !important;
+  }
+  
+  /* Override bg-background class specifically for sections in dark mode */
+  html.dark section.bg-background,
+  .dark section.bg-background,
+  body.dark section.bg-background,
+  html.dark .bg-background,
+  .dark .bg-background,
+  body.dark .bg-background {
+    background-color: #0f172a !important;
+  }
+  
+  html:not(.dark) section.bg-background,
+  html:not(.dark) .bg-background {
+    background-color: white !important;
   }
   
   /* Ensure proper touch targets */
