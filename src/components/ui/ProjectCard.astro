@@ -13,9 +13,12 @@ export interface Props {
   paper?: string;
   paperTitle?: string;
   venue?: string;
+  accuracy?: string;
+  f1Score?: string;
+  precision?: string;
 }
 
-const { title, description, image, github, demo, tags, award, hackathon, teamSize, paper, venue } = Astro.props;
+const { title, description, image, github, demo, tags, award, hackathon, teamSize, paper, venue, accuracy, f1Score, precision } = Astro.props;
 
 // Tag color mapping for different technologies
 const tagColors: Record<string, string> = {
@@ -74,7 +77,7 @@ const getTagColor = (tag: string): string => {
   <!-- Project Image -->
   <div class="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
     <img
-      src={image.startsWith('http') ? image : `${import.meta.env.BASE_URL}${image.startsWith('/') ? image : '/' + image}`}
+      src={image.startsWith('http') ? image : `/${image}`}
 
       alt={`${title} project screenshot`}
       class="project-image w-full h-full object-cover"
@@ -171,6 +174,27 @@ const getTagColor = (tag: string): string => {
         {teamSize && (
           <span class="text-xs text-gray-500 dark:text-gray-500">
             Team of {teamSize}
+          </span>
+        )}
+      </div>
+    )}
+
+    <!-- ML Metrics -->
+    {(accuracy || f1Score || precision) && (
+      <div class="flex flex-wrap gap-2 mb-2">
+        {accuracy && (
+          <span class="ml-metric">
+            Accuracy: {accuracy}
+          </span>
+        )}
+        {f1Score && (
+          <span class="ml-metric">
+            F1: {f1Score}
+          </span>
+        )}
+        {precision && (
+          <span class="ml-metric">
+            Precision: {precision}
           </span>
         )}
       </div>

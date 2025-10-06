@@ -390,4 +390,419 @@ html {
   .safe-area-inset-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
+}/* 
+===== UNIQUE ML-THEMED ENHANCEMENTS ===== */
+
+/* Neural Network Background Animation */
+.neural-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+}
+
+.neural-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-primary);
+  animation: pulse-node 4s ease-in-out infinite;
+}
+
+.neural-connection {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  box-shadow: 0 0 3px var(--color-primary);
+  animation: data-flow 3s linear infinite;
+}
+
+@keyframes pulse-node {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+@keyframes data-flow {
+  0% { opacity: 0; transform: scaleX(0); }
+  50% { opacity: 0.6; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(0); }
+}
+
+/* Enhanced Typewriter Effect */
+.typewriter {
+  border-right: 2px solid var(--color-primary);
+  animation: blink-cursor 1s infinite;
+}
+
+.rotating-title {
+  border-right: 2px solid var(--color-primary);
+  animation: blink-cursor 1s infinite;
+  min-height: 1.2em;
+  display: inline-block;
+}
+
+@keyframes blink-cursor {
+  0%, 50% { border-color: var(--color-primary); }
+  51%, 100% { border-color: transparent; }
+}
+
+/* Floating Code Particles */
+.code-particle {
+  position: fixed;
+  font-family: 'Fira Code', 'Monaco', monospace;
+  font-size: 10px;
+  color: var(--color-primary);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+  animation: float-code 15s linear infinite;
+}
+
+@keyframes float-code {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.1;
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Enhanced Project Cards with ML Metrics */
+.project-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.project-card:hover::before {
+  left: 100%;
+}
+
+/* ML Accuracy Badge Animation */
+.ml-metric {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  animation: metric-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes metric-glow {
+  0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+  100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+}
+
+/* Interactive Skill Bars */
+.skill-progress {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 8px;
+}
+
+.skill-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 10px;
+  animation: skill-load 2s ease-out forwards;
+  width: var(--skill-level, 0%);
+}
+
+@keyframes skill-load {
+  0% { width: 0%; }
+  100% { width: var(--skill-level, 0%); }
+}
+
+/* Subtle Matrix Rain Effect */
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -2;
+  opacity: 0.02;
+}
+
+.matrix-char {
+  position: absolute;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  color: var(--color-primary);
+  animation: matrix-fall 10s linear infinite;
+}
+
+@keyframes matrix-fall {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* Dark mode adjustments for unique effects */
+.dark .neural-bg {
+  opacity: 0.12;
+}
+
+.dark .code-particle {
+  opacity: 0.25;
+}
+
+.dark .matrix-rain {
+  opacity: 0.03;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .neural-node,
+  .neural-connection,
+  .code-particle,
+  .matrix-char,
+  .typewriter,
+  .rotating-title {
+    animation: none;
+  }
+  
+  .project-card::before {
+    display: none;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .neural-bg,
+  .matrix-rain,
+  .code-particle {
+    display: none;
+  }
+}
+
+/* ===== PRINT STYLES FOR RESUME-READY PORTFOLIO ===== */
+@media print {
+  /* Reset and base styles */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+    color: #000 !important;
+    background: white !important;
+  }
+
+  /* Hide interactive elements */
+  header,
+  .quote-widget,
+  #easter-egg-trigger,
+  .neural-bg,
+  .code-particle,
+  .cursor-trail-dot,
+  button,
+  .hover\:scale-105,
+  .hover\:shadow-md,
+  .hover\:shadow-xl {
+    display: none !important;
+  }
+
+  /* Main content adjustments */
+  main {
+    padding-top: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+
+  /* Section spacing */
+  section {
+    page-break-inside: avoid;
+    margin-bottom: 1.5rem !important;
+    padding: 1rem 0 !important;
+    background: white !important;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+    margin-bottom: 0.5rem !important;
+  }
+
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 16pt !important; }
+  h3 { font-size: 14pt !important; }
+
+  /* Hero section - compact for print */
+  #hero {
+    min-height: auto !important;
+    padding: 1rem 0 !important;
+  }
+
+  #hero .container {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  #hero img {
+    width: 80px !important;
+    height: 80px !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Skills section - compact grid */
+  #skills .flex-wrap {
+    display: block !important;
+  }
+
+  #skills span {
+    display: inline-block !important;
+    margin: 0.1rem 0.2rem !important;
+    padding: 0.1rem 0.3rem !important;
+    font-size: 9pt !important;
+    border: 1px solid #ccc !important;
+    background: #f5f5f5 !important;
+    color: #000 !important;
+  }
+
+  /* Experience timeline - linear for print */
+  .timeline-item {
+    display: block !important;
+    margin-bottom: 1rem !important;
+    page-break-inside: avoid;
+  }
+
+  .timeline-connector {
+    display: none !important;
+  }
+
+  .timeline-content {
+    margin-left: 0 !important;
+  }
+
+  /* Project cards - simplified */
+  .project-card {
+    border: 1px solid #ccc !important;
+    margin-bottom: 1rem !important;
+    padding: 0.5rem !important;
+    background: white !important;
+    page-break-inside: avoid;
+  }
+
+  .project-card img {
+    display: none !important;
+  }
+
+  /* Links - show URLs */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666;
+  }
+
+  a[href^="mailto"]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666;
+  }
+
+  /* Contact section */
+  #contact {
+    page-break-before: avoid;
+  }
+
+  /* Publications - compact */
+  .publication-item {
+    margin-bottom: 0.5rem !important;
+    font-size: 10pt !important;
+  }
+
+  /* Education - compact */
+  .education-item {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Remove shadows and effects */
+  .shadow-lg,
+  .shadow-md,
+  .shadow-sm,
+  .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  /* Ensure proper page breaks */
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+
+  .no-page-break {
+    page-break-inside: avoid;
+  }
+
+  /* Footer info for print */
+  body::after {
+    content: "Portfolio: https://shrutii07.github.io | Generated: " attr(data-print-date);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 8pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding: 0.25rem;
+    background: white;
+  }
+
+  /* Optimize for A4 paper */
+  @page {
+    size: A4;
+    margin: 0.75in;
+  }
 }

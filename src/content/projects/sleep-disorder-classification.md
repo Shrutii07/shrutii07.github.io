@@ -8,6 +8,8 @@ order: 1
 tags: ["Python","Keras", "CRNN", "Medical AI"]
 startDate: "2022-01"
 endDate: "2022-07"
+accuracy: "94.2%"
+f1Score: "0.91"
 paper: "https://ieeexplore.ieee.org/document/10310136"
 paperTitle: "A Hierarchical Approach for the Diagnosis of Sleep Disorders Using Convolutional Recurrent Neural Network"
 venue: "IEEE"

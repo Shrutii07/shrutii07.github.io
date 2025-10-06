@@ -1,7 +1,7 @@
 ---
 title: "BuddyLoan - Your All-in-One Loan Application"
 description: "BuddyLoan is a scalable, full-stack web application designed to serve as a centralized platform for managing all user loan repayment schedules. The application features an intuitive and secure Angular frontend for seamless interaction. The robust backend utilizes Spring Boot microservices, organized via Netflix Eureka and routed through Spring Cloud Gateway, ensuring reliability and fast performance. Spring Security was implemented to safeguard user and financial data stored in the MySQL database (accessed via Spring-JPA). This architecture emphasizes fast load times and provides users with a comprehensive, secure hub for tracking and managing their loan obligations."
-image: "/images/projects/buddyloan.png"
+image: "images/projects/buddyloan.png"
 github: "https://github.com/Shrutii07/BuddyLoan"
 demo: "https://youtu.be/9on63Mj7oV8"
 featured: true

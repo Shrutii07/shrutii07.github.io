@@ -3,15 +3,18 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Hero from '../components/sections/Hero.astro';
-import Skills from '../components/sections/Skills.astro';
 import Projects from '../components/sections/Projects.astro';
 import Publications from '../components/sections/Publications.astro';
 import Experience from '../components/sections/Experience.astro';
 import Education from '../components/sections/Education.astro';
 import Contact from '../components/sections/Contact.astro';
+import Skills from '../components/sections/Skills.astro';
+import QuoteWidget from '../components/ui/QuoteWidget.astro';
+import ScrollProgress from '../components/ui/ScrollProgress.astro';
 ---
 
-<BaseLayout title="ML Engineer Portfolio">
+<BaseLayout title="Shruti Murarka">
+  <ScrollProgress />
   <Header />
   
   <!-- Main content with sections for navigation testing -->
@@ -39,4 +42,7 @@ import Contact from '../components/sections/Contact.astro';
     <Contact />
 
   </main>
+
+  <!-- Easter Egg Quote Widget -->
+  <QuoteWidget />
 </BaseLayout>

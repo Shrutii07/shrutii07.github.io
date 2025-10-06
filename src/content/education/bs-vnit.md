@@ -5,9 +5,9 @@ field: "Electronics and Communication Engineering"
 startDate: "2018-06"
 endDate: "2022-05"
 location: "Nagpur, India"
-logo: "images/vnit-logo.png"
+logo: "images/education/vnit-logo.png"
 gpa: "9.01/10.0"
-honors: ["Dean's List (4 semesters)", "Computer Science Honor Society"]
+honors: [ "Best Thesis Project (10/10)"]
 coursework:
   - "ECL 205: Object Oriented Programming"
   - "MAL 206: Linear Algebra and Applications"

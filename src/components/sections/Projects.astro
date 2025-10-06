@@ -572,7 +572,7 @@ const contentStats = {
         
         // Handle image errors with fallback
         imgElement.addEventListener('error', () => {
-          const fallbackUrl = `${import.meta.env.BASE_URL}/test-image.png`;
+          const fallbackUrl = "/test-image.png";
           if (imgElement.src !== fallbackUrl) {
             imgElement.src = fallbackUrl;
           }

@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found - SM_">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900 px-4">
+    <div class="text-center max-w-md mx-auto">
+      <!-- 404 Animation -->
+      <div class="mb-8">
+        <div class="text-8xl font-bold text-gray-300 dark:text-gray-600 mb-4 animate-pulse">
+          404
+        </div>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+      </div>
+
+      <!-- Error Message -->
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        Page Not Found
+      </h1>
+      
+      <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+        Oops! The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="space-y-4">
+        <a 
+          href="/" 
+          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+          </svg>
+          Back to Portfolio
+        </a>
+        
+        <div class="text-sm text-gray-500 dark:text-gray-400">
+          or try one of these sections:
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-2">
+          <a href="/#projects" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            Projects
+          </a>
+          <a href="/#experience" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            Experience
+          </a>
+          <a href="/#skills" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            Skills
+          </a>
+          <a href="/#contact" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            Contact
+          </a>
+        </div>
+      </div>
+
+      <!-- Brand -->
+      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          SM_
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Machine Learning Engineer Portfolio
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Add some subtle animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>

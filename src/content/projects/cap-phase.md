@@ -8,6 +8,8 @@ order: 1
 tags: ["Python","Keras", "CRNN", "Medical AI"]
 startDate: "2021-06"
 endDate: "2021-12"
+accuracy: "96.8%"
+precision: "0.95"
 paper: "https://doi.org/10.1016/j.compbiomed.2022.105594"
 paperTitle: "Automated classification of cyclic alternating pattern sleep phases in healthy and sleep-disordered subjects using convolutional neural network"
 venue: "Computers in Biology and Medicine"

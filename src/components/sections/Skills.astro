@@ -1,299 +1,169 @@
 ---
 import { getCollection } from 'astro:content';
-import SkillBadge from '../ui/SkillBadge.astro';
 
-// Get skills data from content collection
+// Add DevIcon CSS
+const devIconCSS = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css';
+
+// Get skills data from markdown file - force rebuild
 const skillsEntries = await getCollection('skills');
 const skillsData = skillsEntries[0]?.data;
 
-if (!skillsData) {
-  throw new Error('Skills data not found. Please ensure src/content/skills/main.md exists.');
-}
+// Icon mapping based on skill names (since markdown parsing has issues)
+const getSkillIconPath = (skillName: string) => {
+  const iconMap: Record<string, string> = {
+    // Programming Languages
+    'Python': '/icons/python.png',
+    'JavaScript': '/icons/javascript.png',
+    'TypeScript': '/icons/typescript.png',
+    'Java': '/icons/java.png',
+    'SQL': '/icons/sql.png',
+    // ML & AI
+    'TensorFlow': '/icons/tensorflow.png',
+    'PyTorch': '/icons/pytorch.png',
+    'HuggingFace': '/icons/huggingface.png',
+    'LangChain': '/icons/langchain.png',
+    'LangGraph': '/icons/langgraph.png',
+    'Scikit-learn': '/icons/scikit-learn.png',
+    'Pandas': '/icons/pandas.png',
+    'NumPy': '/icons/numpy.png',
+    // Cloud & DevOps
+    'AWS': '/icons/aws.png',
+    'Docker': '/icons/docker.png',
+    'Kubernetes': '/icons/kubernetes.png',
+    'MLOps': '/icons/mlops.png',
+    'Git': '/icons/git.png',
+    // Databases & Tools
+    'PostgreSQL': '/icons/postgresql.png',
+    'MongoDB': '/icons/mongodb.png',
+    'Redis': '/icons/redis.png',
+    'Jupyter': '/icons/jupyter.png',
+    'VS Code': '/icons/vscode.png'
+  };
+  
+  return iconMap[skillName] || '/icons/default.png';
+};
 
-const { categories } = skillsData;
+const skillCategories = skillsData?.categories || [];
 ---
 
-<section id="skills" class="py-8 sm:py-12 md:py-16 bg-gray-50/50 dark:bg-gray-900/50">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+<section id="skills" class="py-20 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-6 max-w-6xl">
     <!-- Section Header -->
-    <div class="section-header text-center mb-6 sm:mb-8 opacity-0 transform translate-y-8">
-      <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        Skills
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+        Technical Skills
       </h2>
+      <div class="w-20 h-1 bg-blue-600 mx-auto rounded-full"></div>
     </div>
 
-    <!-- Skills Grid -->
-    <div class="skills-container space-y-4 sm:space-y-6">
-      {categories.map((category, categoryIndex) => (
-        <div 
-          class="skill-category"
-          data-category={category.name}
-          style={`animation-delay: ${categoryIndex * 200}ms`}
-        >
+    <!-- Skills Categories -->
+    <div class="space-y-12">
+      {skillCategories.map((category, categoryIndex) => (
+        <div class="skill-category" style={`animation-delay: ${categoryIndex * 200}ms`}>
           <!-- Category Title -->
-          <h3 class="text-sm sm:text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 sm:mb-3 px-2 sm:px-0">
+          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-8 text-center">
             {category.name}
           </h3>
           
           <!-- Skills Grid -->
-          <div class="skills-grid grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-1.5 sm:gap-2 md:gap-3 px-2 sm:px-0">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {category.skills.map((skill, skillIndex) => (
-              <SkillBadge 
-                name={skill.name}
-                level={skill.level}
-                color={skill.color}
-                index={categoryIndex * 10 + skillIndex}
-              />
+              <div 
+                class="skill-card group cursor-pointer"
+                style={`animation-delay: ${(categoryIndex * 200) + (skillIndex * 100)}ms`}
+              >
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700">
+                  <!-- Icon -->
+                  <div class="flex justify-center mb-2">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                      <img 
+                        src={getSkillIconPath(skill.name)} 
+                        alt={skill.name}
+                        width="32" 
+                        height="32" 
+                        class="skill-icon"
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                      />
+                      <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-xs font-bold hidden">
+                        {skill.name.slice(0,2).toUpperCase()}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Skill Name -->
+                  <h4 class="text-xs font-semibold text-gray-900 dark:text-white text-center">
+                    {skill.name}
+                  </h4>
+
+                  
+
+                </div>
+              </div>
             ))}
           </div>
         </div>
       ))}
     </div>
-
-    <!-- Skills Summary Stats (Optional Enhancement) -->
-    <div class="mt-8 sm:mt-12 md:mt-16 text-center px-4">
-      <div class="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-        <div class="flex items-center space-x-2">
-          <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span>Expert Level</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <span>Advanced Level</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-          <span>Intermediate Level</span>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
 <style>
-  .section-header {
-    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .section-header.animate-in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
   .skill-category {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    animation-play-state: paused;
+    animation: fadeInUp 0.8s ease-out forwards;
   }
 
-  .skill-category.animate-in {
-    animation-play-state: running;
+  .skill-card {
+    opacity: 0;
+    animation: slideInUp 0.6s ease-out forwards;
   }
 
   @keyframes fadeInUp {
-    0% {
+    from {
       opacity: 0;
-      transform: translateY(30px) scale(0.95);
+      transform: translateY(30px);
     }
-    60% {
-      opacity: 0.8;
-      transform: translateY(-5px) scale(1.02);
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    100% {
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
   }
 
-  /* Responsive grid adjustments */
-  @media (max-width: 640px) {
-    .skills-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-    }
-  }
-
-  @media (min-width: 641px) and (max-width: 768px) {
-    .skills-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .skills-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  @media (min-width: 1025px) and (max-width: 1280px) {
-    .skills-grid {
-      grid-template-columns: repeat(5, 1fr);
-    }
-  }
-
-  @media (min-width: 1281px) {
-    .skills-grid {
-      grid-template-columns: repeat(6, 1fr);
-    }
-  }
-
-  /* Respect reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
-    .skill-category {
+    .skill-category,
+    .skill-card {
       animation: none;
       opacity: 1;
       transform: none;
     }
   }
 
-  /* Enhanced focus management for keyboard navigation */
-  .skills-grid:focus-within {
-    outline: 2px solid var(--color-primary, #3b82f6);
-    outline-offset: 4px;
-    border-radius: 8px;
+  /* Icon styling */
+  .skill-icon {
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .skill-card:hover .skill-icon {
+    transform: scale(1.1);
+  }
+
+  /* Ensure icons display properly */
+  .skill-card img {
+    max-width: 100%;
+    height: auto;
   }
 </style>
-
-<script>
-  // Enhanced Intersection Observer for scroll-triggered animations
-  if (typeof window !== 'undefined') {
-    const observerOptions = {
-      threshold: 0.2,
-      rootMargin: '0px 0px -100px 0px'
-    };
-
-    let animationTriggered = false;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !animationTriggered) {
-          animationTriggered = true;
-          const skillsSection = entry.target as HTMLElement;
-          
-          // Animate section header first
-          const header = skillsSection.querySelector('.section-header');
-          if (header) {
-            header.classList.add('animate-in');
-          }
-
-          // Animate categories with stagger
-          const categories = skillsSection.querySelectorAll('.skill-category');
-          categories.forEach((category, categoryIndex) => {
-            const categoryElement = category as HTMLElement;
-            
-            setTimeout(() => {
-              categoryElement.classList.add('animate-in');
-              
-              // Animate skill badges within this category
-              const skillBadges = categoryElement.querySelectorAll('.skill-badge');
-              skillBadges.forEach((badge, badgeIndex) => {
-                const badgeElement = badge as HTMLElement;
-                setTimeout(() => {
-                  badgeElement.style.animationDelay = `${badgeIndex * 50}ms`;
-                  badgeElement.classList.add('animate-in');
-                }, badgeIndex * 30);
-              });
-            }, categoryIndex * 300);
-          });
-
-          // Add floating animation to random badges
-          setTimeout(() => {
-            addFloatingAnimation();
-          }, 2000);
-        }
-      });
-    }, observerOptions);
-
-    // Add subtle floating animation to random skill badges
-    function addFloatingAnimation() {
-      const allBadges = document.querySelectorAll('.skill-badge');
-      const randomBadges = Array.from(allBadges)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, Math.min(5, allBadges.length));
-
-      randomBadges.forEach((badge, index) => {
-        const badgeElement = badge as HTMLElement;
-        setTimeout(() => {
-          badgeElement.classList.add('floating');
-        }, index * 500);
-      });
-    }
-
-    // Enhanced hover effects for skill categories
-    function addCategoryHoverEffects() {
-      const categories = document.querySelectorAll('.skill-category');
-      
-      categories.forEach((category) => {
-        const categoryElement = category as HTMLElement;
-        const badges = categoryElement.querySelectorAll('.skill-badge');
-        
-        categoryElement.addEventListener('mouseenter', () => {
-          badges.forEach((badge, index) => {
-            const badgeElement = badge as HTMLElement;
-            setTimeout(() => {
-              badgeElement.style.transform = 'translateY(-2px) scale(1.02)';
-            }, index * 20);
-          });
-        });
-        
-        categoryElement.addEventListener('mouseleave', () => {
-          badges.forEach((badge) => {
-            const badgeElement = badge as HTMLElement;
-            badgeElement.style.transform = '';
-          });
-        });
-      });
-    }
-
-    // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      const skillsSection = document.getElementById('skills');
-      if (skillsSection) {
-        observer.observe(skillsSection);
-        addCategoryHoverEffects();
-      }
-
-      // Add keyboard navigation support
-      const skillBadges = document.querySelectorAll('.skill-badge');
-      skillBadges.forEach((badge) => {
-        badge.setAttribute('tabindex', '0');
-        badge.setAttribute('role', 'button');
-        badge.setAttribute('aria-label', `${badge.getAttribute('data-skill')} - ${badge.getAttribute('data-level')} level`);
-      });
-    });
-
-    // Cleanup observer on page unload
-    window.addEventListener('beforeunload', () => {
-      observer.disconnect();
-    });
-
-    // Add CSS for floating animation
-    const style = document.createElement('style');
-    style.textContent = `
-      .floating {
-        animation: float 3s ease-in-out infinite;
-      }
-      
-      @keyframes float {
-        0%, 100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-5px);
-        }
-      }
-      
-      .animate-in {
-        animation-play-state: running !important;
-      }
-      
-      @media (prefers-reduced-motion: reduce) {
-        .floating {
-          animation: none;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-</script>

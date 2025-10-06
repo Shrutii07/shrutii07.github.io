@@ -1,0 +1,457 @@
+---
+// Quote Widget - Hidden Easter Egg
+const quotes = [
+  {
+    text: "The best way to predict the future is to invent it.",
+    author: "Alan Kay"
+  },
+  {
+    text: "Machine learning is the last invention that humanity will ever need to make.",
+    author: "Nick Bostrom"
+  },
+  {
+    text: "Data is the new oil, but machine learning is the refinery.",
+    author: "Anonymous"
+  },
+  {
+    text: "In God we trust. All others must bring data.",
+    author: "W. Edwards Deming"
+  },
+  {
+    text: "The goal is to turn data into information, and information into insight.",
+    author: "Carly Fiorina"
+  },
+  {
+    text: "Artificial intelligence is the new electricity.",
+    author: "Andrew Ng"
+  },
+  {
+    text: "There are two ways of constructing a software design: one way is to make it so simple that there are obviously no deficiencies; the other is to make it so complicated that there are no obvious deficiencies.",
+    author: "Tony Hoare"
+  },
+  {
+    text: "The question of whether a computer can think is no more interesting than the question of whether a submarine can swim.",
+    author: "Edsger W. Dijkstra"
+  },
+  {
+    text: "I have always wished for my computer to be as easy to use as my telephone; my wish has come true because I can no longer figure out how to use my telephone.",
+    author: "Bjarne Stroustrup"
+  },
+  {
+    text: "Any sufficiently advanced technology is indistinguishable from magic.",
+    author: "Arthur C. Clarke"
+  },
+  {
+    text: "The future belongs to organizations that can turn today's information into tomorrow's insight.",
+    author: "Anonymous"
+  },
+  {
+    text: "Machine learning will automate jobs we never imagined could be automated.",
+    author: "Dave Waters"
+  },
+  {
+    text: "Without big data analytics, companies are blind and deaf, wandering out onto the web like deer on a freeway.",
+    author: "Geoffrey Moore"
+  },
+  {
+    text: "The real question is not whether machines think but whether men do.",
+    author: "B.F. Skinner"
+  },
+  {
+    text: "Data scientists are involved with gathering data, massaging it into a tractable form, making it tell its story, and presenting that story to others.",
+    author: "Mike Loukides"
+  },
+  {
+    text: "The most valuable commodity I know of is information.",
+    author: "Gordon Gekko"
+  },
+  {
+    text: "Code is like humor. When you have to explain it, it's bad.",
+    author: "Cory House"
+  },
+  {
+    text: "First, solve the problem. Then, write the code.",
+    author: "John Johnson"
+  },
+  {
+    text: "Experience is the name everyone gives to their mistakes.",
+    author: "Oscar Wilde"
+  },
+  {
+    text: "The best error message is the one that never shows up.",
+    author: "Thomas Fuchs"
+  },
+  {
+    text: "Simplicity is the ultimate sophistication.",
+    author: "Leonardo da Vinci"
+  },
+  {
+    text: "Talk is cheap. Show me the code.",
+    author: "Linus Torvalds"
+  },
+  {
+    text: "The computer was born to solve problems that did not exist before.",
+    author: "Bill Gates"
+  },
+  {
+    text: "Programming isn't about what you know; it's about what you can figure out.",
+    author: "Chris Pine"
+  },
+  {
+    text: "The only way to learn a new programming language is by writing programs in it.",
+    author: "Dennis Ritchie"
+  },
+  {
+    text: "Innovation distinguishes between a leader and a follower.",
+    author: "Steve Jobs"
+  },
+  {
+    text: "The science of today is the technology of tomorrow.",
+    author: "Edward Teller"
+  },
+  {
+    text: "Debugging is twice as hard as writing the code in the first place.",
+    author: "Brian Kernighan"
+  },
+  {
+    text: "Make it work, make it right, make it fast.",
+    author: "Kent Beck"
+  },
+  {
+    text: "The best way to get a project done faster is to start sooner.",
+    author: "Jim Highsmith"
+  }
+];
+
+const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+---
+
+<!-- Hidden Quote Widget - Easter Egg -->
+<div 
+  id="quote-widget" 
+  class="quote-widget fixed bottom-4 right-4 max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 transform translate-y-full opacity-0 transition-all duration-500 z-50"
+>
+  <div class="flex items-start gap-3">
+    <div class="flex-shrink-0">
+      <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"></path>
+      </svg>
+    </div>
+    <div class="flex-1">
+      <p class="text-sm text-gray-700 dark:text-gray-300 mb-2 leading-relaxed" id="quote-text">
+        {randomQuote.text}
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 font-medium" id="quote-author">
+        — {randomQuote.author}
+      </p>
+    </div>
+  </div>
+  
+  <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+    <span class="text-xs text-gray-400 dark:text-gray-500">Quote of the Day</span>
+    <div class="flex items-center gap-2">
+      <button 
+        id="refresh-quote" 
+        class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        aria-label="New quote"
+      >
+        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8 M21 3v5h-5 M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16 M8 16H3v5"></path>
+        </svg>
+      </button>
+      <button 
+        id="close-quote" 
+        class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        aria-label="Close"
+      >
+        <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <div class="text-center mt-2">
+    <span class="text-xs text-blue-500 dark:text-blue-400">🎉 You found the easter egg!</span>
+  </div>
+</div>
+
+<!-- Easter Egg Trigger -->
+<button 
+  id="easter-egg-trigger" 
+  class="fixed bottom-4 right-4 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full opacity-70 hover:opacity-100 transition-all duration-300 cursor-pointer z-40 shadow-lg hover:shadow-xl transform hover:scale-110 border-0 outline-none focus:outline-none"
+  title="💡 Quote of the Day"
+  type="button"
+  style="display: flex; align-items: center; justify-content: center;"
+>
+  <svg class="w-5 h-5 text-white pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+  </svg>
+</button>
+
+<script>
+  const quotes = [
+    {
+      text: "The best way to predict the future is to invent it.",
+      author: "Alan Kay"
+    },
+    {
+      text: "Machine learning is the last invention that humanity will ever need to make.",
+      author: "Nick Bostrom"
+    },
+    {
+      text: "Data is the new oil, but machine learning is the refinery.",
+      author: "Anonymous"
+    },
+    {
+      text: "In God we trust. All others must bring data.",
+      author: "W. Edwards Deming"
+    },
+    {
+      text: "The goal is to turn data into information, and information into insight.",
+      author: "Carly Fiorina"
+    },
+    {
+      text: "Artificial intelligence is the new electricity.",
+      author: "Andrew Ng"
+    },
+    {
+      text: "There are two ways of constructing a software design: one way is to make it so simple that there are obviously no deficiencies; the other is to make it so complicated that there are no obvious deficiencies.",
+      author: "Tony Hoare"
+    },
+    {
+      text: "The question of whether a computer can think is no more interesting than the question of whether a submarine can swim.",
+      author: "Edsger W. Dijkstra"
+    },
+    {
+      text: "I have always wished for my computer to be as easy to use as my telephone; my wish has come true because I can no longer figure out how to use my telephone.",
+      author: "Bjarne Stroustrup"
+    },
+    {
+      text: "Any sufficiently advanced technology is indistinguishable from magic.",
+      author: "Arthur C. Clarke"
+    },
+    {
+      text: "The future belongs to organizations that can turn today's information into tomorrow's insight.",
+      author: "Anonymous"
+    },
+    {
+      text: "Machine learning will automate jobs we never imagined could be automated.",
+      author: "Dave Waters"
+    },
+    {
+      text: "Without big data analytics, companies are blind and deaf, wandering out onto the web like deer on a freeway.",
+      author: "Geoffrey Moore"
+    },
+    {
+      text: "The real question is not whether machines think but whether men do.",
+      author: "B.F. Skinner"
+    },
+    {
+      text: "Data scientists are involved with gathering data, massaging it into a tractable form, making it tell its story, and presenting that story to others.",
+      author: "Mike Loukides"
+    },
+    {
+      text: "The most valuable commodity I know of is information.",
+      author: "Gordon Gekko"
+    },
+    {
+      text: "Code is like humor. When you have to explain it, it's bad.",
+      author: "Cory House"
+    },
+    {
+      text: "First, solve the problem. Then, write the code.",
+      author: "John Johnson"
+    },
+    {
+      text: "Experience is the name everyone gives to their mistakes.",
+      author: "Oscar Wilde"
+    },
+    {
+      text: "The best error message is the one that never shows up.",
+      author: "Thomas Fuchs"
+    },
+    {
+      text: "Simplicity is the ultimate sophistication.",
+      author: "Leonardo da Vinci"
+    },
+    {
+      text: "Talk is cheap. Show me the code.",
+      author: "Linus Torvalds"
+    },
+    {
+      text: "The computer was born to solve problems that did not exist before.",
+      author: "Bill Gates"
+    },
+    {
+      text: "Programming isn't about what you know; it's about what you can figure out.",
+      author: "Chris Pine"
+    },
+    {
+      text: "The only way to learn a new programming language is by writing programs in it.",
+      author: "Dennis Ritchie"
+    },
+    {
+      text: "Innovation distinguishes between a leader and a follower.",
+      author: "Steve Jobs"
+    },
+    {
+      text: "The science of today is the technology of tomorrow.",
+      author: "Edward Teller"
+    },
+    {
+      text: "Debugging is twice as hard as writing the code in the first place.",
+      author: "Brian Kernighan"
+    },
+    {
+      text: "Make it work, make it right, make it fast.",
+      author: "Kent Beck"
+    },
+    {
+      text: "The best way to get a project done faster is to start sooner.",
+      author: "Jim Highsmith"
+    }
+  ];
+
+  function initQuoteWidget() {
+    const trigger = document.getElementById('easter-egg-trigger');
+    const widget = document.getElementById('quote-widget');
+    const refreshBtn = document.getElementById('refresh-quote');
+    const closeBtn = document.getElementById('close-quote');
+    const quoteText = document.getElementById('quote-text');
+    const quoteAuthor = document.getElementById('quote-author');
+
+    if (!trigger || !widget || !refreshBtn || !closeBtn || !quoteText || !quoteAuthor) return;
+
+    let isVisible = false;
+
+    function showWidget() {
+      if (widget && trigger) {
+        widget.classList.remove('translate-y-full', 'opacity-0');
+        widget.classList.add('translate-y-0', 'opacity-100');
+        trigger.style.display = 'none';
+        isVisible = true;
+      }
+    }
+
+    function hideWidget() {
+      if (widget && trigger) {
+        widget.classList.add('translate-y-full', 'opacity-0');
+        widget.classList.remove('translate-y-0', 'opacity-100');
+        setTimeout(() => {
+          if (trigger) trigger.style.display = 'block';
+        }, 500);
+        isVisible = false;
+      }
+    }
+
+    function getRandomQuote() {
+      return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    function updateQuote() {
+      if (quoteText && quoteAuthor) {
+        const newQuote = getRandomQuote();
+        quoteText.textContent = newQuote.text;
+        quoteAuthor.textContent = `— ${newQuote.author}`;
+        
+        // Add a subtle animation
+        quoteText.style.opacity = '0';
+        setTimeout(() => {
+          if (quoteText) quoteText.style.opacity = '1';
+        }, 150);
+      }
+    }
+
+    // Event listeners
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showWidget();
+    });
+    
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      hideWidget();
+    });
+    
+    refreshBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      updateQuote();
+    });
+
+    // Hide widget when clicking outside
+    document.addEventListener('click', (e) => {
+      if (isVisible && !widget.contains(e.target as Node) && e.target !== trigger) {
+        hideWidget();
+      }
+    });
+
+    // Keyboard shortcut (Konami code easter egg)
+    let konamiCode: string[] = [];
+    const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+    
+    document.addEventListener('keydown', (e) => {
+      konamiCode.push(e.code);
+      if (konamiCode.length > konamiSequence.length) {
+        konamiCode.shift();
+      }
+      
+      if (konamiCode.join(',') === konamiSequence.join(',')) {
+        if (!isVisible) {
+          showWidget();
+          updateQuote();
+        }
+        konamiCode = [];
+      }
+    });
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initQuoteWidget);
+</script>
+
+<style>
+  .quote-widget {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  #easter-egg-trigger {
+    animation: gentle-glow 2s ease-in-out infinite;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #easter-egg-trigger svg {
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  #easter-egg-trigger {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  @keyframes gentle-glow {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+    50% { 
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    }
+  }
+
+  /* Hide on mobile to avoid clutter */
+  @media (max-width: 768px) {
+    .quote-widget,
+    #easter-egg-trigger {
+      display: none;
+    }
+  }
+</style>

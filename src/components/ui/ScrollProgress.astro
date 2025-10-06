@@ -1,0 +1,63 @@
+---
+// Scroll Progress Indicator Component
+---
+
+<!-- Scroll Progress Bar -->
+<div 
+  id="scroll-progress" 
+  class="fixed top-0 left-0 transition-all duration-150 ease-out"
+  style="width: 0%; z-index: 9999; background: linear-gradient(90deg, #3b82f6, #8b5cf6); height: 2px;"
+></div>
+
+<!-- Test element removed for production -->
+
+<script>
+  function initScrollProgress() {
+    const progressBar = document.getElementById('scroll-progress');
+    if (!progressBar) return;
+
+    function updateProgress() {
+      if (!progressBar) return;
+      
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      
+      const finalPercent = Math.min(Math.max(scrollPercent, 0), 100);
+      progressBar.style.width = finalPercent + '%';
+    }
+
+    // Update on scroll
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    
+    // Update on resize
+    window.addEventListener('resize', updateProgress, { passive: true });
+    
+    // Initial update
+    updateProgress();
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', initScrollProgress);
+</script>
+
+<style>
+  #scroll-progress {
+    height: 2px !important;
+    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3) !important;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
+  }
+
+  /* Dark theme - white progress bar */
+  .dark #scroll-progress {
+    background: linear-gradient(90deg, #ffffff, #f3f4f6) !important;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.3) !important;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    #scroll-progress {
+      transition: none;
+    }
+  }
+</style>

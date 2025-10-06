@@ -103,7 +103,9 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
 ---
 
 <section id="hero" class="relative min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
-  <div class="container max-w-6xl mx-auto">
+  <!-- Neural Network Background -->
+  <div class="neural-bg" id="neural-background"></div>
+  <div class="container max-w-6xl mx-auto relative z-10">
     <div class="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-12">
       
       <!-- Profile Image -->
@@ -137,7 +139,7 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
             <span class="typewriter" data-text={profile.name}></span>
           </h1>
           <h2 class="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-primary mb-2">
-            {profile.title}
+            <span class="rotating-title" data-titles='["Machine Learning Engineer", "AI Researcher", "Data Scientist", "Deep Learning Specialist", "ML Systems Engineer"]'></span>
           </h2>
         </div>
 
@@ -342,10 +344,221 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
     }
   }
 
+  // Rotating titles effect
+  function initRotatingTitles() {
+    const rotatingElement = document.querySelector('.rotating-title') as HTMLElement;
+    if (!rotatingElement) return;
+
+    const titlesData = rotatingElement.getAttribute('data-titles');
+    if (!titlesData) return;
+
+    const titles = JSON.parse(titlesData);
+    let currentIndex = 0;
+    
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      rotatingElement.textContent = titles[0];
+      return;
+    }
+
+    function typeTitle(title: string, callback?: () => void) {
+      let i = 0;
+      rotatingElement.textContent = '';
+      
+      function typeChar() {
+        if (i < title.length) {
+          rotatingElement.textContent = title.substring(0, i + 1);
+          i++;
+          setTimeout(typeChar, 80);
+        } else {
+          setTimeout(() => {
+            // Erase the title
+            let j = title.length;
+            function eraseChar() {
+              if (j > 0) {
+                rotatingElement.textContent = title.substring(0, j - 1);
+                j--;
+                setTimeout(eraseChar, 40);
+              } else {
+                callback && callback();
+              }
+            }
+            setTimeout(eraseChar, 2000); // Wait 2 seconds before erasing
+          }, 100);
+        }
+      }
+      typeChar();
+    }
+
+    function nextTitle() {
+      typeTitle(titles[currentIndex], () => {
+        currentIndex = (currentIndex + 1) % titles.length;
+        setTimeout(nextTitle, 500); // Brief pause between titles
+      });
+    }
+
+    // Start the rotation
+    setTimeout(nextTitle, 1000); // Wait 1 second before starting
+  }
+
+  // Subtle cursor trail effect
+  function initCursorTrail() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    const trail: HTMLElement[] = [];
+    const trailLength = 8;
+    
+    // Create trail elements
+    for (let i = 0; i < trailLength; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'cursor-trail-dot';
+      dot.style.cssText = `
+        position: fixed;
+        width: ${6 - i * 0.5}px;
+        height: ${6 - i * 0.5}px;
+        background: rgba(59, 130, 246, ${0.8 - i * 0.1});
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 0.1s ease;
+        transform: translate(-50%, -50%);
+      `;
+      document.body.appendChild(dot);
+      trail.push(dot);
+    }
+
+    let mouseX = 0, mouseY = 0;
+    let positions = Array(trailLength).fill({ x: 0, y: 0 });
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function updateTrail() {
+      positions[0] = { x: mouseX, y: mouseY };
+      
+      for (let i = 1; i < trailLength; i++) {
+        positions[i] = {
+          x: positions[i].x + (positions[i - 1].x - positions[i].x) * 0.3,
+          y: positions[i].y + (positions[i - 1].y - positions[i].y) * 0.3
+        };
+      }
+
+      trail.forEach((dot, i) => {
+        dot.style.left = positions[i].x + 'px';
+        dot.style.top = positions[i].y + 'px';
+      });
+
+      requestAnimationFrame(updateTrail);
+    }
+
+    updateTrail();
+  }
+
+  // Neural network background
+  function initNeuralBackground() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    const neuralBg = document.getElementById('neural-background');
+    if (!neuralBg) return;
+
+    const nodes: { x: number; y: number; element: HTMLElement }[] = [];
+    const nodeCount = 15;
+
+    // Create nodes
+    for (let i = 0; i < nodeCount; i++) {
+      const node = document.createElement('div');
+      node.className = 'neural-node';
+      
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      
+      node.style.left = x + '%';
+      node.style.top = y + '%';
+      node.style.animationDelay = Math.random() * 4 + 's';
+      
+      neuralBg.appendChild(node);
+      nodes.push({ x, y, element: node });
+    }
+
+    // Create connections between nearby nodes
+    nodes.forEach((nodeA, i) => {
+      nodes.forEach((nodeB, j) => {
+        if (i !== j) {
+          const distance = Math.sqrt(
+            Math.pow(nodeA.x - nodeB.x, 2) + Math.pow(nodeA.y - nodeB.y, 2)
+          );
+          
+          if (distance < 25) { // Only connect nearby nodes
+            const connection = document.createElement('div');
+            connection.className = 'neural-connection';
+            
+            const angle = Math.atan2(nodeB.y - nodeA.y, nodeB.x - nodeA.x);
+            const length = distance;
+            
+            connection.style.left = nodeA.x + '%';
+            connection.style.top = nodeA.y + '%';
+            connection.style.width = length + '%';
+            connection.style.transform = `rotate(${angle}rad)`;
+            connection.style.transformOrigin = '0 50%';
+            connection.style.animationDelay = Math.random() * 3 + 's';
+            
+            neuralBg.appendChild(connection);
+          }
+        }
+      });
+    });
+  }
+
+  // Floating code particles
+  function initCodeParticles() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    const codeSnippets = [
+      'import tensorflow as tf',
+      'model.fit(X_train, y_train)',
+      'np.array([[1, 0], [0, 1]])',
+      'sklearn.ensemble.RandomForest',
+      'torch.nn.functional.relu',
+      'pd.DataFrame.groupby()',
+      'cv2.imread(image_path)',
+      'plt.scatter(x, y)',
+      'from transformers import',
+      'accuracy_score(y_true, y_pred)'
+    ];
+
+    function createCodeParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'code-particle';
+      particle.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+      
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      
+      document.body.appendChild(particle);
+      
+      // Remove particle after animation
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 20000);
+    }
+
+    // Create particles periodically
+    setInterval(createCodeParticle, 3000);
+  }
+
   // Initialize on DOM content loaded
   document.addEventListener('DOMContentLoaded', () => {
     initTypewriter();
     initImageErrorHandling();
+    initRotatingTitles();
+    initCursorTrail();
+    initNeuralBackground();
+    initCodeParticles();
   });
   
   // Also initialize immediately in case DOMContentLoaded already fired
