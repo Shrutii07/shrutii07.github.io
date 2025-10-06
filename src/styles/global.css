@@ -130,25 +130,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Explicit background overrides for production */
+/* Force background colors for production */
 html {
-  background-color: white !important;
+  background-color: white;
 }
 
-html.dark,
-.dark {
-  background-color: #0f172a !important;
+html.dark {
+  background-color: #0f172a;
 }
 
-html.dark body,
-.dark body,
-body.dark {
-  background-color: #0f172a !important;
+body {
+  background-color: white;
 }
 
-html:not(.dark) body,
-body:not(.dark) {
-  background-color: white !important;
+html.dark body {
+  background-color: #0f172a;
 }
 
 /* Typography */
@@ -992,26 +988,14 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
     color: #f1f5f9 !important;
   }
   
-  /* Ensure all sections have consistent backgrounds - MAXIMUM SPECIFICITY */
-  html:not(.dark) section,
-  html:not(.dark) section[id],
-  html:not(.dark) main section,
-  html:not(.dark) main section[id] {
+  /* Ensure all sections have consistent backgrounds */
+  html:not(.dark) section {
     background-color: white !important;
   }
   
   html.dark section,
-  html.dark section[id],
-  html.dark main section,
-  html.dark main section[id],
   .dark section,
-  .dark section[id],
-  .dark main section,
-  .dark main section[id],
-  body.dark section,
-  body.dark section[id],
-  body.dark main section,
-  body.dark main section[id] {
+  body.dark section {
     background-color: #0f172a !important;
   }
   
