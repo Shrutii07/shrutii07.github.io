@@ -151,13 +151,16 @@ const contentStats = {
 };
 ---
 
-<section id="projects" class="py-8 sm:py-12 md:py-16 bg-background">
+<section id="projects" class="py-12 sm:py-16 md:py-20 bg-background">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
     <!-- Section Header -->
-    <div class="section-header text-center mb-6 sm:mb-8">
-      <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-text mb-4">
-        Projects
+    <div class="section-header text-center mb-8 sm:mb-12">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text mb-4">
+        Featured Projects
       </h2>
+      <p class="text-base sm:text-lg text-text-muted max-w-2xl mx-auto">
+        A showcase of my machine learning and software engineering projects
+      </p>
 
       <!-- Content Source Indicator (for development) -->
       {contentStats.contentSource === 'fallback' && (
@@ -177,7 +180,7 @@ const contentStats = {
     {featuredProjects.length > 0 ? (
       <div>
         <!-- First 3 Projects (Always Visible) -->
-        <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+        <div class="projects-grid grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {featuredProjects.slice(0, 3).map((project, index) => (
             <ProjectCard
               title={project.title}
@@ -200,7 +203,7 @@ const contentStats = {
         <!-- Additional Projects (Hidden by Default) -->
         {featuredProjects.length > 3 && (
           <div class="additional-projects max-h-0 overflow-hidden transition-all duration-500 ease-in-out opacity-0">
-            <div class="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mt-6">
+            <div class="projects-grid grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
               {featuredProjects.slice(3).map((project, index) => (
                 <ProjectCard
                   title={project.title}

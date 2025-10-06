@@ -72,6 +72,11 @@
   --duration-normal: 100ms;
   --duration-slow: 150ms;
   
+  /* Mobile-specific variables */
+  --mobile-padding: 1rem;
+  --mobile-margin: 0.75rem;
+  --touch-target-size: 44px;
+  
   /* Animation easings */
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -452,32 +457,70 @@ html {
   51%, 100% { border-color: transparent; }
 }
 
-/* Floating Code Particles */
-.code-particle {
-  position: fixed;
-  font-family: 'Fira Code', 'Monaco', monospace;
-  font-size: 10px;
-  color: var(--color-primary);
-  opacity: 0.2;
-  pointer-events: none;
-  z-index: -1;
-  animation: float-code 15s linear infinite;
+/* NUCLEAR OPTION: Completely disable floating technical content */
+.code-particle,
+div[class*="code-particle"],
+div[id*="code-particle"],
+div[class="code-particle"],
+*[class*="code-particle"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: static !important;
+  transform: none !important;
+  animation: none !important;
 }
 
-@keyframes float-code {
-  0% {
-    transform: translateY(100vh) rotate(0deg);
-    opacity: 0;
+/* Kill any div containing technical terms that's positioned */
+div[style*="position: fixed"]:not(.quote-widget):not(#quote-widget):not(#easter-egg-trigger):not(.cursor-trail-dot):not(header):not(nav):not(.social-link) {
+  display: none !important;
+}
+
+div[style*="position: absolute"]:not(.timeline-dot):not(.project-card *):not(.skill-card *):not(.hero *):not(.decorative) {
+  display: none !important;
+}
+
+/* Hide any floating elements that might contain technical terms */
+div[style*="position: fixed"]:not(.quote-widget):not(#quote-widget):not(#easter-egg-trigger):not(.cursor-trail-dot):not(header):not(nav),
+div[style*="position: absolute"]:not(.timeline-dot):not(.project-card *):not(.skill-card *):not(.hero *) {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Additional safety net for floating text */
+body > div:not([class]):not([id]) {
+  display: none !important;
+}
+
+/* Hide elements containing specific technical terms - handled by JavaScript */
+
+/* Aggressive mobile-specific hiding */
+@media (max-width: 768px) {
+  /* Hide ALL floating positioned elements except essential UI */
+  div[style*="position: fixed"]:not(.quote-widget):not(#quote-widget):not(#easter-egg-trigger):not(#mobile-menu):not(header):not(.social-link),
+  div[style*="position: absolute"]:not(.timeline-dot):not(.project-card *):not(.skill-card *) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
-  10% {
-    opacity: 0.1;
+  
+  /* Disable all animations that might create floating elements */
+  *:not(#hero):not(#hero *):not(.hero):not(.hero *) {
+    animation-play-state: paused !important;
   }
-  90% {
-    opacity: 0.1;
+  
+  /* Override any JavaScript-created styles */
+  div[style*="animation"]:not(#hero):not(#hero *) {
+    animation: none !important;
   }
-  100% {
-    transform: translateY(-100px) rotate(360deg);
-    opacity: 0;
+  
+  /* Ensure hero section is always visible */
+  #hero,
+  #hero * {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 
@@ -586,9 +629,7 @@ html {
   opacity: 0.12;
 }
 
-.dark .code-particle {
-  opacity: 0.25;
-}
+/* Dark mode code particles removed */
 
 .dark .matrix-rain {
   opacity: 0.03;
@@ -598,7 +639,6 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .neural-node,
   .neural-connection,
-  .code-particle,
   .matrix-char,
   .typewriter,
   .rotating-title {
@@ -613,8 +653,7 @@ html {
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .neural-bg,
-  .matrix-rain,
-  .code-particle {
+  .matrix-rain {
     display: none;
   }
 }
@@ -640,7 +679,6 @@ html {
   .quote-widget,
   #easter-egg-trigger,
   .neural-bg,
-  .code-particle,
   .cursor-trail-dot,
   button,
   .hover\:scale-105,
@@ -805,4 +843,297 @@ html {
     size: A4;
     margin: 0.75in;
   }
+}
+/* ===== 
+MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
+
+/* Base mobile styles */
+@media (max-width: 640px) {
+  /* Ensure Hero section is always visible on mobile */
+  #hero {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 100vh !important;
+  }
+  
+  #hero * {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  #hero .flex {
+    display: flex !important;
+  }
+  
+  #hero .flex-col {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Ensure proper touch targets */
+  button, a, input, select, textarea {
+    min-height: var(--touch-target-size);
+    min-width: var(--touch-target-size);
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    font-size: 16px; /* Prevent zoom on iOS */
+    line-height: 1.6;
+  }
+  
+  /* Better spacing for mobile */
+  .container {
+    padding-left: var(--mobile-padding);
+    padding-right: var(--mobile-padding);
+  }
+  
+  /* Improve button spacing */
+  .btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+  
+  /* Better form elements */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+  
+  /* Improve card spacing */
+  .project-card, .skill-card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Better section spacing */
+  section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  /* Improve typography hierarchy */
+  h1 { font-size: 2rem; line-height: 1.2; }
+  h2 { font-size: 1.75rem; line-height: 1.3; }
+  h3 { font-size: 1.5rem; line-height: 1.4; }
+  h4 { font-size: 1.25rem; line-height: 1.4; }
+  
+  /* Better navigation */
+  .nav-link, .mobile-nav-link {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+}
+
+/* Tablet improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  /* Better grid layouts for tablets */
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Improve touch interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .project-card:hover,
+  .skill-card:hover,
+  .social-link:hover {
+    transform: none;
+    box-shadow: inherit;
+  }
+  
+  /* Add active states for touch feedback */
+  .project-card:active,
+  .skill-card:active,
+  .btn:active,
+  .social-link:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Improve accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .project-card,
+  .skill-card {
+    border: 2px solid currentColor;
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode improvements for mobile */
+@media (max-width: 640px) {
+  .dark {
+    /* Ensure better contrast on mobile screens */
+    --color-text: #ffffff;
+    --color-background: #000000;
+  }
+  
+  .dark .project-card,
+  .dark .skill-card {
+    border-color: #374151;
+    background-color: #1f2937;
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce vertical padding in landscape */
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .hero-section {
+    min-height: 70vh;
+  }
+  
+  /* Adjust navigation for landscape */
+  #mobile-menu {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+
+/* Very small screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Smaller text on very small screens */
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  /* Adjust grid for very small screens */
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  /* Smaller buttons */
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Large screens optimization */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1280px;
+  }
+  
+  /* Better use of space on large screens */
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Print optimizations */
+@media print {
+  /* Hide interactive elements */
+  .btn,
+  .social-link,
+  #mobile-menu-button,
+  .quote-widget,
+  #easter-egg-trigger {
+    display: none !important;
+  }
+  
+  /* Optimize for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: black;
+    background: white;
+  }
+  
+  .project-card,
+  .skill-card {
+    break-inside: avoid;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth scrolling with reduced motion respect */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Better loading states */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }

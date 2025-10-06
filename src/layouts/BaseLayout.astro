@@ -21,6 +21,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || url);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     
@@ -66,9 +69,137 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || url);
       } else {
         document.documentElement.classList.remove('dark');
       }
+      
+      // NUCLEAR OPTION: Prevent any floating technical content from appearing
+      (function() {
+        // Clear any cached intervals that might create floating elements
+        for (let i = 1; i < 10000; i++) {
+          clearInterval(i);
+        }
+        
+        // Override setInterval to prevent code particle creation
+        const originalSetInterval = window.setInterval;
+        window.setInterval = function(callback, delay) {
+          // Check if the callback might create floating elements
+          const callbackStr = callback.toString();
+          if (callbackStr.includes('code-particle') || 
+              callbackStr.includes('tensorflow') || 
+              callbackStr.includes('model.fit') ||
+              callbackStr.includes('pd.DataFrame') ||
+              callbackStr.includes('cv2.imread') ||
+              callbackStr.includes('createCodeParticle')) {
+            console.log('Blocked interval that would create floating elements');
+            return 0; // Don't run the interval
+          }
+          return originalSetInterval.call(this, callback, delay);
+        };
+        
+        // Aggressive cleanup on page load
+        function nukeFloatingContent() {
+          // Remove any divs with technical content
+          const allDivs = document.querySelectorAll('div');
+          allDivs.forEach(el => {
+            const text = (el.textContent || '').toLowerCase();
+            const style = el.getAttribute('style') || '';
+            
+            if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
+                (text.includes('tensorflow') || text.includes('model.fit') || 
+                 text.includes('pd.dataframe') || text.includes('cv2.imread') ||
+                 text.includes('plt.scatter') || text.includes('sklearn') ||
+                 text.includes('torch') || text.includes('numpy') ||
+                 text.includes('import ') || text.includes('accuracy_score'))) {
+              console.log('Removed floating element with technical content:', text.substring(0, 50));
+              el.remove();
+            }
+          });
+          
+          // Also remove elements with the code-particle class
+          const codeParticles = document.querySelectorAll('.code-particle');
+          codeParticles.forEach(el => el.remove());
+        }
+        
+        // Run cleanup immediately and repeatedly
+        nukeFloatingContent();
+        const cleanupInterval = setInterval(nukeFloatingContent, 50);
+        
+        // Run cleanup when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', nukeFloatingContent);
+        }
+        
+        // Also run cleanup on window load
+        window.addEventListener('load', nukeFloatingContent);
+        
+        // Run cleanup when page becomes visible (in case of cached content)
+        document.addEventListener('visibilitychange', function() {
+          if (!document.hidden) {
+            nukeFloatingContent();
+          }
+        });
+      })();
     </script>
   </head>
   <body class="bg-background text-text transition-colors duration-300">
+    <!-- IMMEDIATE CODE PARTICLE KILLER -->
+    <script is:inline>
+      // Run immediately to prevent any code particles
+      (function() {
+        // Kill any existing intervals
+        for (let i = 1; i < 10000; i++) {
+          try { clearInterval(i); } catch(e) {}
+        }
+        
+        // Override createElement to prevent code particles
+        const originalCreateElement = document.createElement;
+        document.createElement = function(tagName) {
+          const element = originalCreateElement.call(this, tagName);
+          if (tagName.toLowerCase() === 'div') {
+            // Block className assignment for code particles
+            Object.defineProperty(element, 'className', {
+              set: function(value) {
+                if (value && value.includes('code-particle')) {
+                  return; // Don't set it
+                }
+                this.setAttribute('class', value);
+              },
+              get: function() {
+                return this.getAttribute('class') || '';
+              }
+            });
+          }
+          return element;
+        };
+        
+        // Aggressive cleanup function
+        function killCodeParticles() {
+          // Remove by class
+          document.querySelectorAll('.code-particle').forEach(el => el.remove());
+          
+          // Remove by content
+          document.querySelectorAll('div').forEach(el => {
+            const text = (el.textContent || '').toLowerCase();
+            if (text.includes('sklearn') || text.includes('tensorflow') || 
+                text.includes('model.fit') || text.includes('pd.dataframe') ||
+                text.includes('cv2.imread') || text.includes('plt.scatter')) {
+              const style = el.getAttribute('style') || '';
+              if (style.includes('position: fixed') || style.includes('position: absolute')) {
+                el.remove();
+              }
+            }
+          });
+        }
+        
+        // Run cleanup immediately and continuously
+        killCodeParticles();
+        setInterval(killCodeParticles, 10); // Every 10ms
+        
+        // Also run on various events
+        ['DOMContentLoaded', 'load', 'focus', 'visibilitychange'].forEach(event => {
+          document.addEventListener(event, killCodeParticles);
+        });
+      })();
+    </script>
+    
     <slot />
   </body>
 </html>

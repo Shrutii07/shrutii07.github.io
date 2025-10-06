@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.16.19"><!-- Primary Meta Tags --><title>Page Not Found - SM_</title><meta name="title" content="Page Not Found - SM_"><meta name="description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><link rel="canonical" href="https://shrutii07.github.io/404/"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://shrutii07.github.io/"><meta property="og:title" content="Page Not Found - SM_"><meta property="og:description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><meta property="og:image" content="/images/og-image.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://shrutii07.github.io/"><meta property="twitter:title" content="Page Not Found - SM_"><meta property="twitter:description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><meta property="twitter:image" content="/images/og-image.jpg"><!-- Inter Font --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><!-- Global Styles --><link rel="stylesheet" href="/src/styles/global.css"><!-- Theme Script (runs before page load to prevent flash) --><script>
+<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.16.19"><!-- Primary Meta Tags --><title>Page Not Found - SM_</title><meta name="title" content="Page Not Found - SM_"><meta name="description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><link rel="canonical" href="https://shrutii07.github.io/404/"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://shrutii07.github.io/"><meta property="og:title" content="Page Not Found - SM_"><meta property="og:description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><meta property="og:image" content="/images/og-image.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://shrutii07.github.io/"><meta property="twitter:title" content="Page Not Found - SM_"><meta property="twitter:description" content="Professional portfolio showcasing machine learning expertise, projects, and research contributions."><meta property="twitter:image" content="/images/og-image.jpg"><!-- Inter Font --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><!-- Global Styles --><link rel="stylesheet" href="/src/styles/global.css"><!-- Theme Script (runs before page load to prevent flash) --><script>
       // Check for saved theme preference or default to system preference
       const savedTheme = localStorage.getItem('theme');
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -8,9 +8,134 @@
       } else {
         document.documentElement.classList.remove('dark');
       }
-    </script><link rel="stylesheet" href="/assets/index.B5t3CNnf.css">
+      
+      // NUCLEAR OPTION: Prevent any floating technical content from appearing
+      (function() {
+        // Clear any cached intervals that might create floating elements
+        for (let i = 1; i < 10000; i++) {
+          clearInterval(i);
+        }
+        
+        // Override setInterval to prevent code particle creation
+        const originalSetInterval = window.setInterval;
+        window.setInterval = function(callback, delay) {
+          // Check if the callback might create floating elements
+          const callbackStr = callback.toString();
+          if (callbackStr.includes('code-particle') || 
+              callbackStr.includes('tensorflow') || 
+              callbackStr.includes('model.fit') ||
+              callbackStr.includes('pd.DataFrame') ||
+              callbackStr.includes('cv2.imread') ||
+              callbackStr.includes('createCodeParticle')) {
+            console.log('Blocked interval that would create floating elements');
+            return 0; // Don't run the interval
+          }
+          return originalSetInterval.call(this, callback, delay);
+        };
+        
+        // Aggressive cleanup on page load
+        function nukeFloatingContent() {
+          // Remove any divs with technical content
+          const allDivs = document.querySelectorAll('div');
+          allDivs.forEach(el => {
+            const text = (el.textContent || '').toLowerCase();
+            const style = el.getAttribute('style') || '';
+            
+            if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
+                (text.includes('tensorflow') || text.includes('model.fit') || 
+                 text.includes('pd.dataframe') || text.includes('cv2.imread') ||
+                 text.includes('plt.scatter') || text.includes('sklearn') ||
+                 text.includes('torch') || text.includes('numpy') ||
+                 text.includes('import ') || text.includes('accuracy_score'))) {
+              console.log('Removed floating element with technical content:', text.substring(0, 50));
+              el.remove();
+            }
+          });
+          
+          // Also remove elements with the code-particle class
+          const codeParticles = document.querySelectorAll('.code-particle');
+          codeParticles.forEach(el => el.remove());
+        }
+        
+        // Run cleanup immediately and repeatedly
+        nukeFloatingContent();
+        const cleanupInterval = setInterval(nukeFloatingContent, 50);
+        
+        // Run cleanup when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', nukeFloatingContent);
+        }
+        
+        // Also run cleanup on window load
+        window.addEventListener('load', nukeFloatingContent);
+        
+        // Run cleanup when page becomes visible (in case of cached content)
+        document.addEventListener('visibilitychange', function() {
+          if (!document.hidden) {
+            nukeFloatingContent();
+          }
+        });
+      })();
+    </script><link rel="stylesheet" href="/assets/index.C7yfQQZ7.css">
 <style>@keyframes float{0%,to{transform:translateY(0)}50%{transform:translateY(-10px)}}.animate-pulse[data-astro-cid-zetdm5md]{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}
-</style></head> <body class="bg-background text-text transition-colors duration-300">  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900 px-4" data-astro-cid-zetdm5md> <div class="text-center max-w-md mx-auto" data-astro-cid-zetdm5md> <!-- 404 Animation --> <div class="mb-8" data-astro-cid-zetdm5md> <div class="text-8xl font-bold text-gray-300 dark:text-gray-600 mb-4 animate-pulse" data-astro-cid-zetdm5md>
+</style></head> <body class="bg-background text-text transition-colors duration-300"> <!-- IMMEDIATE CODE PARTICLE KILLER --> <script>
+      // Run immediately to prevent any code particles
+      (function() {
+        // Kill any existing intervals
+        for (let i = 1; i < 10000; i++) {
+          try { clearInterval(i); } catch(e) {}
+        }
+        
+        // Override createElement to prevent code particles
+        const originalCreateElement = document.createElement;
+        document.createElement = function(tagName) {
+          const element = originalCreateElement.call(this, tagName);
+          if (tagName.toLowerCase() === 'div') {
+            // Block className assignment for code particles
+            Object.defineProperty(element, 'className', {
+              set: function(value) {
+                if (value && value.includes('code-particle')) {
+                  return; // Don't set it
+                }
+                this.setAttribute('class', value);
+              },
+              get: function() {
+                return this.getAttribute('class') || '';
+              }
+            });
+          }
+          return element;
+        };
+        
+        // Aggressive cleanup function
+        function killCodeParticles() {
+          // Remove by class
+          document.querySelectorAll('.code-particle').forEach(el => el.remove());
+          
+          // Remove by content
+          document.querySelectorAll('div').forEach(el => {
+            const text = (el.textContent || '').toLowerCase();
+            if (text.includes('sklearn') || text.includes('tensorflow') || 
+                text.includes('model.fit') || text.includes('pd.dataframe') ||
+                text.includes('cv2.imread') || text.includes('plt.scatter')) {
+              const style = el.getAttribute('style') || '';
+              if (style.includes('position: fixed') || style.includes('position: absolute')) {
+                el.remove();
+              }
+            }
+          });
+        }
+        
+        // Run cleanup immediately and continuously
+        killCodeParticles();
+        setInterval(killCodeParticles, 10); // Every 10ms
+        
+        // Also run on various events
+        ['DOMContentLoaded', 'load', 'focus', 'visibilitychange'].forEach(event => {
+          document.addEventListener(event, killCodeParticles);
+        });
+      })();
+    </script>  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900 px-4" data-astro-cid-zetdm5md> <div class="text-center max-w-md mx-auto" data-astro-cid-zetdm5md> <!-- 404 Animation --> <div class="mb-8" data-astro-cid-zetdm5md> <div class="text-8xl font-bold text-gray-300 dark:text-gray-600 mb-4 animate-pulse" data-astro-cid-zetdm5md>
 404
 </div> <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" data-astro-cid-zetdm5md></div> </div> <!-- Error Message --> <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4" data-astro-cid-zetdm5md>
 Page Not Found

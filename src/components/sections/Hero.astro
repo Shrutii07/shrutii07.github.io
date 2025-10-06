@@ -45,8 +45,10 @@ if (profileEntry?.data) {
       scholar: profileEntry.data.social?.scholar || ""
     }
   };
+  console.log('Profile loaded successfully:', profile.name);
 } else {
   profile = fallbackProfile;
+  console.log('Using fallback profile data');
 }
 
 // Social media platform configurations with validation
@@ -102,16 +104,16 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
 }));
 ---
 
-<section id="hero" class="relative min-h-[70vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
+<section id="hero" class="relative min-h-screen sm:min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
   <!-- Neural Network Background -->
   <div class="neural-bg" id="neural-background"></div>
   <div class="container max-w-6xl mx-auto relative z-10">
-    <div class="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-12">
+    <div class="flex flex-col lg:flex-row items-center gap-8 sm:gap-10 lg:gap-12">
       
       <!-- Profile Image -->
-      <div class="flex-shrink-0 animate-fade-in animate-stagger-1">
+      <div class="flex-shrink-0 animate-fade-in animate-stagger-1 order-1 lg:order-none">
         <div class="relative">
-          <div class="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden bg-surface shadow-xl ring-4 ring-blue-200 dark:ring-blue-800 transition-all duration-500 hover:ring-blue-300 dark:hover:ring-blue-700 hover:shadow-2xl">
+          <div class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden bg-surface shadow-xl ring-4 ring-blue-200 dark:ring-blue-800 transition-all duration-500 hover:ring-blue-300 dark:hover:ring-blue-700 hover:shadow-2xl mx-auto">
             <img
               src={profile.profileImage}
               alt={`${profile.name} - ${profile.title}`}
@@ -131,21 +133,21 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
       </div>
 
       <!-- Content -->
-      <div class="flex-1 text-center lg:text-left space-y-4">
+      <div class="flex-1 text-center lg:text-left space-y-6 order-2 lg:order-none">
         
         <!-- Name with typewriter -->
         <div class="animate-slide-up animate-stagger-2">
-          <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-text mb-1 leading-tight">
-            <span class="typewriter" data-text={profile.name}></span>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-text mb-2 leading-tight">
+            <span class="typewriter" data-text={profile.name}>{profile.name}</span>
           </h1>
-          <h2 class="text-base sm:text-lg md:text-xl lg:text-2xl font-medium text-primary mb-2">
-            <span class="rotating-title" data-titles='["Machine Learning Engineer", "AI Researcher", "Data Scientist", "Deep Learning Specialist", "ML Systems Engineer"]'></span>
+          <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium text-primary mb-4">
+            <span class="rotating-title" data-titles='["Machine Learning Engineer", "AI Researcher", "Data Scientist", "Deep Learning Specialist", "ML Systems Engineer"]'>Machine Learning Engineer</span>
           </h2>
         </div>
 
         <!-- Bio -->
         <div class="animate-slide-up animate-stagger-3">
-          <p class="text-sm sm:text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
+          <p class="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed">
             {profile.bio}
           </p>
         </div>
@@ -205,16 +207,16 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
 
         <!-- Call to Action -->
         <div class="animate-slide-up animate-stagger-6">
-          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2 sm:gap-3 pt-4">
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-6">
             <a
               href={`mailto:${profile.email}`}
-              class="btn btn-primary w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 min-h-[40px] touch-manipulation"
+              class="btn btn-primary w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 min-h-[48px] touch-manipulation"
             >
               Get In Touch
             </a>
             <a
               href="#experience"
-              class="btn btn-secondary w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base font-semibold rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 min-h-[40px] touch-manipulation"
+              class="btn btn-secondary w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 min-h-[48px] touch-manipulation"
             >
               View Experience
             </a>
@@ -285,6 +287,50 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
   @media (prefers-reduced-motion: reduce) {
     .bg-gradient-to-br {
       animation: none;
+    }
+  }
+
+  /* Ensure Hero is always visible on mobile */
+  @media (max-width: 768px) {
+    #hero {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      min-height: 100vh !important;
+      background: white !important;
+    }
+    
+    .dark #hero {
+      background: #0f172a !important;
+    }
+    
+    .typewriter,
+    .rotating-title,
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-stagger-1,
+    .animate-stagger-2,
+    .animate-stagger-3,
+    .animate-stagger-4,
+    .animate-stagger-5,
+    .animate-stagger-6 {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+      display: block !important;
+      visibility: visible !important;
+    }
+    
+    /* Ensure text is visible */
+    h1, h2, p, span {
+      color: #1e293b !important;
+    }
+    
+    .dark h1,
+    .dark h2,
+    .dark p,
+    .dark span {
+      color: #f1f5f9 !important;
     }
   }
 </style>
@@ -511,54 +557,58 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
     });
   }
 
-  // Floating code particles
-  function initCodeParticles() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    
-    const codeSnippets = [
-      'import tensorflow as tf',
-      'model.fit(X_train, y_train)',
-      'np.array([[1, 0], [0, 1]])',
-      'sklearn.ensemble.RandomForest',
-      'torch.nn.functional.relu',
-      'pd.DataFrame.groupby()',
-      'cv2.imread(image_path)',
-      'plt.scatter(x, y)',
-      'from transformers import',
-      'accuracy_score(y_true, y_pred)'
-    ];
+  // Simple but effective cleanup function
+  function nukeFloatingElements() {
+    // Just remove any floating elements with technical content
+    const allDivs = document.querySelectorAll('div');
+    allDivs.forEach(div => {
+      const style = div.getAttribute('style') || '';
+      const text = div.textContent || '';
+      
+      if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
+          (text.includes('tensorflow') || text.includes('model.fit') || 
+           text.includes('pd.DataFrame') || text.includes('sklearn') || 
+           text.includes('torch') || text.includes('numpy') ||
+           text.includes('cv2.imread') || text.includes('plt.scatter') ||
+           text.includes('import ') || text.includes('accuracy_score'))) {
+        div.remove();
+      }
+    });
+  }
 
-    function createCodeParticle() {
-      const particle = document.createElement('div');
-      particle.className = 'code-particle';
-      particle.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+  // Aggressive cleanup function
+  function aggressiveCleanup() {
+    // Remove any elements containing technical terms
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+      const text = element.textContent || '';
+      const style = element.getAttribute('style') || '';
       
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-      particle.style.animationDelay = Math.random() * 5 + 's';
-      
-      document.body.appendChild(particle);
-      
-      // Remove particle after animation
-      setTimeout(() => {
-        if (particle.parentNode) {
-          particle.parentNode.removeChild(particle);
-        }
-      }, 20000);
-    }
-
-    // Create particles periodically
-    setInterval(createCodeParticle, 3000);
+      if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
+          (text.includes('tensorflow') || text.includes('model.fit') || 
+           text.includes('pd.DataFrame') || text.includes('sklearn') || 
+           text.includes('torch') || text.includes('numpy') ||
+           text.includes('cv2.imread') || text.includes('plt.scatter') ||
+           text.includes('import ') || text.includes('accuracy_score'))) {
+        element.remove();
+      }
+    });
   }
 
   // Initialize on DOM content loaded
   document.addEventListener('DOMContentLoaded', () => {
+    nukeFloatingElements(); // Remove any floating elements
+    aggressiveCleanup(); // Remove any existing floating elements
+    setInterval(nukeFloatingElements, 100); // Clean up every 100ms
+    setInterval(aggressiveCleanup, 100); // Double cleanup
     initTypewriter();
     initImageErrorHandling();
     initRotatingTitles();
-    initCursorTrail();
-    initNeuralBackground();
-    initCodeParticles();
+    // Disable cursor trail and neural background on mobile
+    if (!window.matchMedia('(max-width: 768px)').matches) {
+      initCursorTrail();
+      initNeuralBackground();
+    }
   });
   
   // Also initialize immediately in case DOMContentLoaded already fired
