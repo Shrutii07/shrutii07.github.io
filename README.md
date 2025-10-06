@@ -23,7 +23,7 @@ A modern, responsive portfolio website built with Astro.js and TailwindCSS, spec
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Shrutii07/shrutii07.github.io/
 cd ml-engineer-portfolio
 ```
 

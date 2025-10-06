@@ -1,7 +1,7 @@
 ---
 name: "Shruti Murarka"
 title: "Machine Learning Engineer"
-bio: "Experienced Machine Learning Engineer with expertise in deep learning, computer vision, and data science. Passionate about developing innovative AI solutions and applying machine learning to solve complex real-world problems. Strong background in software engineering and research. Hi, I'm Shruti. I've been a Full-Stack Software Engineer for 2+ years, developing productionised systems at a digital asset hedge fund, delivering scalable solutions for trading, analytics, and operations. I have a passion for all things tech, and am actively looking to learn about new technologies and opportunities. Let's connect!"
+bio: " Hi, I'm Shruti. I am a Computational Science student (M.S., Georgia Tech) and Software Engineer specializing in the intersection of advanced Machine Learning (ML) and scalable system development. I gained significant experience building high-performance, full-stack applications during my time as a Software Engineer at NatWest Group and through subsequent ML/AI internships at IBM Research and Amazon. I have a passion for all things tech, and am actively looking to learn about new technologies and opportunities. Let's connect!"
 email: "shrutimurarka05@gmail.com"
 location: "Atlanta, GA"
 profileImage: "images/profile/IMG_5814_Original.jpeg"

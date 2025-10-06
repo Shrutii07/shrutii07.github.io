@@ -4,7 +4,7 @@ description: "BuddyLoan is a scalable, full-stack web application designed to se
 image: "images/projects/buddyloan.png"
 github: "https://github.com/Shrutii07/BuddyLoan"
 demo: "https://youtu.be/9on63Mj7oV8"
-featured: true
+featured: false
 order: 3
 tags: ["Angular", "MySQL", "Spring-JPA", "Java", "Spring Cloud"]
 startDate: "2024-04"

@@ -49,8 +49,15 @@ try {
         if (a.featured && !b.featured) return -1;
         if (!a.featured && b.featured) return 1;
         
-        // Then sort by order field (lower numbers first)
-        return (a.order || 0) - (b.order || 0);
+        // For featured projects, sort by order field (lower numbers first)
+        if (a.featured && b.featured) {
+          return (a.order || 999) - (b.order || 999);
+        }
+        
+        // For non-featured projects, sort by end date (most recent first)
+        const dateA = new Date(a.endDate || '1900-01-01');
+        const dateB = new Date(b.endDate || '1900-01-01');
+        return dateB.getTime() - dateA.getTime();
       });
     
     console.log(`Loaded ${projects.length} featured projects`);
@@ -137,8 +144,8 @@ const validatedProjects = projects.filter(validateProjectData);
 // Use validated projects or fallback
 const displayProjects = validatedProjects.length > 0 ? validatedProjects : fallbackProjects;
 
-// Limit to maximum of 6 featured projects for better layout
-const featuredProjects = displayProjects.slice(0, 6);
+// Show all projects
+const featuredProjects = displayProjects;
 
 // Generate content statistics
 const contentStats = {
@@ -158,9 +165,7 @@ const contentStats = {
       <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text mb-4">
         Featured Projects
       </h2>
-      <p class="text-base sm:text-lg text-text-muted max-w-2xl mx-auto">
-        A showcase of my machine learning and software engineering projects
-      </p>
+
 
       <!-- Content Source Indicator (for development) -->
       {contentStats.contentSource === 'fallback' && (
@@ -203,8 +208,9 @@ const contentStats = {
         <!-- Additional Projects (Hidden by Default) -->
         {featuredProjects.length > 3 && (
           <div class="additional-projects max-h-0 overflow-hidden transition-all duration-500 ease-in-out opacity-0">
+            <!-- Next 3 Projects (4-6) -->
             <div class="projects-grid grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
-              {featuredProjects.slice(3).map((project, index) => (
+              {featuredProjects.slice(3, 6).map((project, index) => (
                 <ProjectCard
                   title={project.title}
                   description={project.description}
@@ -222,6 +228,29 @@ const contentStats = {
                 />
               ))}
             </div>
+            
+            <!-- Final Project (7th) -->
+            {featuredProjects.length > 6 && (
+              <div class="projects-grid grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
+                {featuredProjects.slice(6).map((project, index) => (
+                  <ProjectCard
+                    title={project.title}
+                    description={project.description}
+                    image={project.image}
+                    github={project.github}
+                    demo={project.demo}
+                    tags={project.tags}
+                    index={index + 6}
+                    award={project.award}
+                    hackathon={project.hackathon}
+                    teamSize={project.teamSize}
+                    paper={project.paper}
+                    paperTitle={project.paperTitle}
+                    venue={project.venue}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

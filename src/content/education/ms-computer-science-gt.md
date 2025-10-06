@@ -9,10 +9,10 @@ logo: "images/education/gt-logo.svg"
 gpa: "3.8/4.0"
 honors: ["Graduate Teacher Assistant (Natural Language Processing)"]
 coursework: 
-  - "10-707: Deep Learning"
-  - "10-708: High Performance Computing"
-  - "10-715: Hardware Software Codesign for ML"
-  - "11-785: Data and Visual Analytics"
-  - "10-725: Computational Data Analysis"
+  - "CS 7643: Deep Learning"
+  - "CSE 6220: High Performance Computing"
+  - "CS 8803: Hardware Software Codesign for ML"
+  - "CSE 6242: Data and Visual Analytics"
+  - "CSE 6740: Computational Data Analysis"
 ---
 
