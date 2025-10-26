@@ -108,7 +108,7 @@ try {
               <div class="timeline-content flex-1 min-w-0">
                 <!-- Header -->
                 <div class="mb-3">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white leading-tight">
                       {experience.data.position}
                     </h3>
@@ -130,23 +130,23 @@ try {
                     </div>
                   </div>
                   
-                  <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                    <div class="flex items-center gap-2">
+                  <div class="mb-2">
+                    <div class="text-base">
                       {experience.data.website ? (
                         <a 
                           href={experience.data.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="text-base font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                          class="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                         >
                           {experience.data.company}
                         </a>
                       ) : (
-                        <span class="text-base font-medium text-gray-800 dark:text-gray-200">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">
                           {experience.data.company}
                         </span>
                       )}
-                      <span class="text-gray-500 dark:text-gray-400">•</span>
+                      <span class="text-gray-500 dark:text-gray-400"> • </span>
                       <span class="text-sm text-gray-600 dark:text-gray-400">{experience.data.location}</span>
                     </div>
                   </div>
@@ -352,6 +352,56 @@ try {
   /* Focus styles for accessibility */
   .achievements-toggle:focus {
     background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  /* Force company and location to stay on same line */
+  .company-location-row {
+    flex-wrap: nowrap !important;
+    min-width: 0;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .company-location-row > * {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* Mobile-specific overrides */
+  @media (max-width: 640px) {
+    .company-location-row {
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 0.375rem !important;
+    }
+    
+    .company-location-row span:last-child {
+      font-size: 0.75rem !important;
+    }
+  }
+
+  /* Force company and location to stay on same line in mobile */
+  .company-location-row {
+    flex-wrap: nowrap !important;
+    min-width: 0;
+  }
+
+  .company-location-row > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Ensure proper spacing on mobile */
+  @media (max-width: 640px) {
+    .company-location-row {
+      gap: 0.5rem;
+    }
+    
+    .company-location-row span:last-child {
+      font-size: 0.75rem;
+    }
   }
 </style>
 

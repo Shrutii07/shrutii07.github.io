@@ -212,18 +212,44 @@ const getTagColor = (tag: string): string => {
     </div>
     
     <!-- Tech Stack Tags -->
-    <div class="flex flex-wrap gap-2">
-      {tags.slice(0, 4).map((tag) => (
-        <span 
-          class={`inline-flex items-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium touch-manipulation ${getTagColor(tag)}`}
-        >
-          {tag}
-        </span>
-      ))}
+    <div class="tech-tags-container">
+      <div class="flex flex-wrap gap-2">
+        {tags.slice(0, 4).map((tag) => (
+          <span 
+            class={`inline-flex items-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium touch-manipulation ${getTagColor(tag)}`}
+          >
+            {tag}
+          </span>
+        ))}
+        {tags.length > 4 && (
+          <button 
+            class="expand-tags-btn inline-flex items-center justify-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer min-w-[2rem]"
+            aria-expanded="false"
+            data-project-title={title}
+          >
+            +{tags.length - 4}
+          </button>
+        )}
+      </div>
+      
       {tags.length > 4 && (
-        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-          +{tags.length - 4}
-        </span>
+        <div class="additional-tags max-h-0 overflow-hidden transition-all duration-300 ease-in-out opacity-0">
+          <div class="flex flex-wrap gap-2 mt-2">
+            {tags.slice(4).map((tag) => (
+              <span 
+                class={`inline-flex items-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium touch-manipulation ${getTagColor(tag)}`}
+              >
+                {tag}
+              </span>
+            ))}
+            <button 
+              class="collapse-tags-btn inline-flex items-center justify-center px-2 py-1 rounded-md text-xs sm:text-sm font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer min-w-[2rem]"
+              data-project-title={title}
+            >
+              −
+            </button>
+          </div>
+        </div>
       )}
     </div>
   </div>
@@ -301,6 +327,37 @@ const getTagColor = (tag: string): string => {
   .dark .project-card span:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
+
+  /* Expandable tags styles */
+  .additional-tags {
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease-in-out,
+                margin-top 0.3s ease-in-out;
+  }
+
+  .additional-tags.expanded {
+    opacity: 1;
+    margin-top: 0.5rem;
+  }
+
+  .expand-tags-btn {
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .expand-tags-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .expand-tags-btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .dark .expand-tags-btn:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
 </style>
 
 <script>
@@ -342,6 +399,60 @@ const getTagColor = (tag: string): string => {
         btnElement.addEventListener('click', (e) => {
           e.stopPropagation();
           descElement.click();
+        });
+      }
+    });
+
+    // Expandable tags functionality
+    const expandTagsBtns = document.querySelectorAll('.expand-tags-btn');
+    const collapseTagsBtns = document.querySelectorAll('.collapse-tags-btn');
+    
+    expandTagsBtns.forEach((btn) => {
+      const container = btn.closest('.tech-tags-container');
+      const additionalTags = container?.querySelector('.additional-tags');
+      
+      if (btn && additionalTags) {
+        const btnElement = btn as HTMLElement;
+        const tagsElement = additionalTags as HTMLElement;
+        
+        btnElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          // Expand
+          tagsElement.style.maxHeight = tagsElement.scrollHeight + 'px';
+          tagsElement.classList.add('expanded');
+          btnElement.style.display = 'none';
+          
+          // Reset max-height after animation completes
+          setTimeout(() => {
+            tagsElement.style.maxHeight = 'none';
+          }, 300);
+        });
+      }
+    });
+
+    collapseTagsBtns.forEach((btn) => {
+      const container = btn.closest('.tech-tags-container');
+      const additionalTags = container?.querySelector('.additional-tags');
+      const expandBtn = container?.querySelector('.expand-tags-btn');
+      
+      if (btn && additionalTags && expandBtn) {
+        const btnElement = btn as HTMLElement;
+        const tagsElement = additionalTags as HTMLElement;
+        const expandBtnElement = expandBtn as HTMLElement;
+        
+        btnElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          
+          // Collapse
+          tagsElement.style.maxHeight = tagsElement.scrollHeight + 'px';
+          
+          // Force reflow
+          tagsElement.offsetHeight;
+          
+          tagsElement.style.maxHeight = '0px';
+          tagsElement.classList.remove('expanded');
+          expandBtnElement.style.display = 'inline-flex';
         });
       }
     });

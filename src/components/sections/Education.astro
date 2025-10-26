@@ -131,14 +131,11 @@ function calculateDuration(startDate: string, endDate?: string): string {
               
               {education.data.honors && education.data.honors.length > 0 && (
                 <div class="flex flex-wrap gap-1">
-                  {education.data.honors.slice(0, 2).map((honor) => (
+                  {education.data.honors.map((honor) => (
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
                       {honor}
                     </span>
                   ))}
-                  {education.data.honors.length > 2 && (
-                    <span class="text-xs text-gray-500 dark:text-gray-400">+{education.data.honors.length - 2} more</span>
-                  )}
                 </div>
               )}
             </div>
@@ -156,16 +153,11 @@ function calculateDuration(startDate: string, endDate?: string): string {
             {education.data.coursework && education.data.coursework.length > 0 && (
               <div>
                 <div class="flex flex-wrap gap-1">
-                  {education.data.coursework.slice(0, 6).map((course) => (
+                  {education.data.coursework.map((course) => (
                     <span class="inline-block px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 rounded">
                       {course}
                     </span>
                   ))}
-                  {education.data.coursework.length > 6 && (
-                    <span class="text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5">
-                      +{education.data.coursework.length - 6} more
-                    </span>
-                  )}
                 </div>
               </div>
             )}
