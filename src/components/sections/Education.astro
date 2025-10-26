@@ -9,8 +9,17 @@ const sortedEducation = educationEntries.sort((a, b) => {
   return dateB.getTime() - dateA.getTime();
 });
 
+// Get all certification entries and sort by issue date (most recent first)
+const certificationEntries = await getCollection('certifications');
+const sortedCertifications = certificationEntries.sort((a, b) => {
+  const dateA = new Date(a.data.issueDate || '1970-01');
+  const dateB = new Date(b.data.issueDate || '1970-01');
+  return dateB.getTime() - dateA.getTime();
+});
+
 // Helper function to format date
 function formatDate(dateString: string): string {
+  if (!dateString) return 'Date not available';
   const parts = dateString.split('-');
   const year = parseInt(parts[0]);
   const month = parseInt(parts[1]) - 1; // Month is 0-indexed in JavaScript
@@ -165,6 +174,59 @@ function calculateDuration(startDate: string, endDate?: string): string {
         </div>
       ))}
     </div>
+
+    <!-- Online Certifications Section -->
+    {sortedCertifications.length > 0 && (
+      <div class="mt-12">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 text-center">
+          Online Certifications
+        </h3>
+        
+        <div class="space-y-2">
+          {sortedCertifications.map((cert) => (
+            <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
+              <div class="flex items-center gap-3 flex-grow min-w-0">
+                {cert.data.logo ? (
+                  <img 
+                    src={`/${cert.data.logo}`} 
+                    alt={`${cert.data.issuer} logo`}
+                    class="w-6 h-6 object-contain rounded flex-shrink-0"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3 h-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                  </div>
+                )}
+                
+                <div class="flex-grow min-w-0">
+                  <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                    {cert.data.title}
+                  </h4>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    {cert.data.issuer} • {formatDate(cert.data.issueDate)}
+                  </p>
+                </div>
+              </div>
+              
+              <a 
+                href={cert.data.credentialUrl || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex-shrink-0 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                title="View Credential"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 </section>
 
