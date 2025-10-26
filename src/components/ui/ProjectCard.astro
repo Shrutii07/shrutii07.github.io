@@ -308,10 +308,10 @@ const getTagColor = (tag: string): string => {
       0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
-  /* Focus styles for accessibility */
+  /* Focus styles for accessibility - disabled */
   .project-card:focus-within {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    outline: none;
+    outline-offset: 0;
   }
 
   /* Minimal link button styles */
@@ -351,8 +351,8 @@ const getTagColor = (tag: string): string => {
   }
 
   .expand-tags-btn:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    outline: none;
+    outline-offset: 0;
   }
 
   .dark .expand-tags-btn:hover {

@@ -180,16 +180,16 @@ a:hover {
 /* Component classes */
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[44px] touch-manipulation;
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium focus:outline-none min-h-[44px] touch-manipulation;
     /* Removed transition-all for instant button response */
   }
   
   .btn-primary {
-    @apply bg-primary text-white hover:bg-blue-600 focus:ring-primary active:bg-blue-700;
+    @apply bg-primary text-white hover:bg-blue-600 active:bg-blue-700;
   }
   
   .btn-secondary {
-    @apply bg-surface text-text hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-primary active:bg-gray-200 dark:active:bg-gray-600;
+    @apply bg-surface text-text hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600;
   }
   
   .card {
@@ -305,10 +305,37 @@ html {
   animation: none;
 }
 
-/* Focus styles for accessibility */
+/* Focus styles for accessibility - disabled highlighting */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: none;
+  outline-offset: 0;
+}
+
+/* Disable all button highlighting */
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible,
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible,
+*:focus,
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+/* Remove any Tailwind focus ring classes */
+.focus\:ring-2:focus,
+.focus\:ring-blue-500:focus,
+.focus\:ring-primary:focus,
+.focus\:ring-offset-2:focus {
+  --tw-ring-shadow: none !important;
+  box-shadow: none !important;
 }
 
 /* Mobile-specific optimizations */
@@ -1240,10 +1267,10 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
   }
 }
 
-/* Focus management for keyboard navigation */
+/* Focus management for keyboard navigation - disabled highlighting */
 .focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: none;
+  outline-offset: 0;
   border-radius: 4px;
 }
 
