@@ -62,7 +62,7 @@ try {
 }
 ---
 
-<section id="experience" class="py-12 sm:py-16 md:py-20 bg-white dark:bg-gray-900 transition-colors">
+<section id="experience" class="py-10 sm:py-12 md:py-16 bg-white dark:bg-gray-900 transition-colors">
   <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
     <!-- Section Header -->
     <div class="section-header text-center mb-6 sm:mb-8">
@@ -232,23 +232,7 @@ try {
       )}
     </div>
 
-    <!-- Call to Action -->
-    {sortedExperiences.length > 0 && (
-      <div class="cta-section text-center mt-8 sm:mt-12 px-4">
-        <p class="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base">
-          Interested in working together? Let's connect!
-        </p>
-        <a 
-          href="#contact" 
-          class="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:outline-none min-h-[44px] touch-manipulation text-sm sm:text-base"
-        >
-          Get in Touch
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    )}
+
   </div>
 </section>
 
@@ -300,11 +284,7 @@ try {
     transform: translateY(0);
   }
 
-  /* Call to action styling */
-  .cta-section {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
 
   /* Dark theme adjustments */
   .dark .timeline-container::before {
@@ -453,19 +433,6 @@ try {
       }
     });
 
-    // Simple smooth scroll for CTA link
-    const ctaLink = document.querySelector('.cta-section a[href="#contact"]');
-    if (ctaLink) {
-      ctaLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        const contactSection = document.getElementById('contact');
-        if (contactSection) {
-          contactSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    }
+
   });
 </script>

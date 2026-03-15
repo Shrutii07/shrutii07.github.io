@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import type { ProfileData } from '../../content/config';
 
 // Get profile data with error handling
@@ -102,161 +102,217 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
   ...platform,
   value: profile.social[platform.key]?.trim() || ''
 }));
+
+// Fetch Recent Highlights from data collection
+const newsEntry = await getEntry('news', 'highlights');
+const recentHighlights = (newsEntry?.data?.items || [])
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .map(item => {
+    // Map icon types to SVG icons with appropriate colors
+    const getIcon = (type: string, color?: string) => {
+      const colorClass = color ? `text-${color}-500` : 'text-primary';
+      
+      switch (type) {
+        case 'award':
+          return `<svg class="w-5 h-5 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" /></svg>`;
+        case 'hackathon':
+          return `<svg class="w-5 h-5 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.36c-2.383 0-4.322-1.939-4.322-4.322 0-2.222 1.678-4.103 3.868-4.296m10.16 5.275A6.026 6.026 0 0019.5 12h-3m3 8v-1.5m0-6V15m-3-1.5c.01.218.01.438 0 .656m0 0C18.665 19.467 14.004 21.5 12 21.5c-2 0-6.665-2.033-6.665-7.344 0-1.666.868-3.15 2.227-4.008M15.59 14.37l-5.656-5.656m5.656 0c.264-.263.542-.511.832-.743l-4.437-4.437m0 0a45.672 45.672 0 00-6.195 2.977l4.437 4.437m0 0c.666-.667 1.488-1.127 2.376-1.32l-1.428 1.428"></path></svg>`;
+        case 'publication':
+          return `<svg class="w-5 h-5 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path></svg>`;
+        case 'project':
+          return `<svg class="w-5 h-5 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>`;
+        default:
+          return `<svg class="w-5 h-5 ${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>`;
+      }
+    };
+
+    // Format date for timeline (e.g., 'Mar 2026')
+    const formatDate = (dateStr: string) => {
+      if (!dateStr) return '';
+      const [year, month] = dateStr.split('-');
+      const date = new Date(parseInt(year), (parseInt(month) || 1) - 1);
+      return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    };
+
+    // Conversion to support bold markdown-like syntax
+    const formatText = (text: string) => {
+      return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-text font-semibold">$1</strong>');
+    };
+
+    return {
+      icon: getIcon(item.icon, item.iconColor),
+      date: formatDate(item.date),
+      html: formatText(item.text)
+    };
+  });
 ---
 
-<section id="hero" class="relative min-h-screen sm:min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
+<section id="hero" class="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 lg:pb-20 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
   <!-- Neural Network Background -->
   <div class="neural-bg" id="neural-background"></div>
-  <div class="container max-w-6xl mx-auto relative z-10">
-    <div class="flex flex-col lg:flex-row items-center gap-8 sm:gap-10 lg:gap-12">
-      
-      <!-- Profile Image -->
-      <div class="flex-shrink-0 animate-fade-in animate-stagger-1 order-1 lg:order-none">
-        <div class="relative">
-          <div class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden bg-surface shadow-xl ring-4 ring-blue-200 dark:ring-blue-800 transition-all duration-500 hover:ring-blue-300 dark:hover:ring-blue-700 hover:shadow-2xl mx-auto">
-            <img
-              src={profile.profileImage}
-              alt={`${profile.name} - ${profile.title}`}
-              class="hero-profile-image w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              loading="eager"
-              decoding="async"
-              width="320"
-              height="320"
 
-            />
+  <div class="container max-w-7xl mx-auto relative z-10 px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_450px] xl:grid-cols-[1fr_500px] gap-8 lg:gap-12 items-start">
+
+      <!-- ===== 1. Profile Image (Order 1 on Mobile, Col 2 on Desktop) ===== -->
+      <div class="order-1 lg:order-none lg:col-start-2 lg:row-start-1 flex flex-col items-center">
+        <div class="animate-fade-in animate-stagger-1 w-full max-w-[260px] sm:max-w-[300px] lg:max-w-[340px] z-10 relative">
+          <div class="relative group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-primary to-accent rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-opacity duration-700"></div>
+            <div class="w-full aspect-square rounded-full overflow-hidden bg-background shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] ring-1 ring-black/5 dark:ring-white/10 relative z-10 transition-transform duration-700 group-hover:scale-[1.02]">
+              <img
+                src={profile.profileImage}
+                alt={`${profile.name} - ${profile.title}`}
+                class="hero-profile-image w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
           </div>
-          
-          <!-- Decorative elements -->
-          <div class="absolute -top-4 -right-4 w-8 h-8 bg-primary rounded-full animate-pulse"></div>
-          <div class="absolute -bottom-2 -left-2 w-6 h-6 bg-accent rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
         </div>
       </div>
 
-      <!-- Content -->
-      <div class="flex-1 text-center lg:text-left space-y-6 order-2 lg:order-none">
-        
-        <!-- Name with typewriter -->
+      <!-- ===== 2. Name / Bio / Action Dock (Order 2 on Mobile, Col 1 on Desktop) ===== -->
+      <div class="order-2 lg:order-none lg:col-start-1 lg:row-start-1 lg:row-span-2 flex flex-col text-center lg:text-left space-y-5 lg:space-y-6 max-w-3xl justify-center">
+        <!-- Name -->
         <div class="animate-slide-up animate-stagger-2">
-          <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-text mb-2 leading-tight">
-            <span class="typewriter" data-text={profile.name}>{profile.name}</span>
+          <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold mb-4 leading-none tracking-[-0.04em]">
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-gray-500">{profile.name}</span>
           </h1>
-          <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium text-primary mb-4">
-            <span class="rotating-title" data-titles='["ML Engineer", "AI Engineer", "Data Scientist", "Full Stack Developer", "ML Systems Engineer"]'>Software Engineer</span>
-          </h2>
+          <div class="relative h-14 sm:h-16 mb-8">
+            <h2 class="absolute top-0 left-0 w-full text-center lg:text-left text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight m-0">
+              <span class="rotating-title text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent" data-titles='["ML Engineer", "AI Engineer", "Data Scientist", "Full Stack Developer", "ML Systems Engineer"]'>Software Engineer</span>
+            </h2>
+          </div>
         </div>
 
         <!-- Bio -->
         <div class="animate-slide-up animate-stagger-3">
-          <div class="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed space-y-4">
+          <div class="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed space-y-6">
             {profile.bio.split('\n\n').map(paragraph => (
               <p>{paragraph}</p>
             ))}
           </div>
         </div>
 
-        <!-- Location -->
-        <div class="animate-slide-up animate-stagger-4">
-          <div class="flex items-center justify-center lg:justify-start gap-2 text-text-muted">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>
-            <span>{profile.location}</span>
-          </div>
-        </div>
-
-        <!-- Social Links -->
-        {activeSocialLinks.length > 0 && (
-          <div class="animate-slide-up animate-stagger-5">
-            <div class="flex items-center justify-center lg:justify-start gap-4 pt-4">
-              {activeSocialLinks.map((platform) => (
-                <a
-                  href={`${platform.baseUrl}${platform.value}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class={`p-3 rounded-full bg-surface hover:bg-primary transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-md hover:shadow-lg ${platform.color} group`}
-                  aria-label={`Visit ${profile.name}'s ${platform.name} profile`}
-                  title={`${platform.name}: ${platform.value}`}
-                >
-                  {platform.icon === 'github' && (
-                    <svg class="w-6 h-6 transition-colors duration-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        <!-- Action Dock -->
+        <div class="animate-slide-up animate-stagger-5 pt-8 w-full max-w-4xl mx-auto lg:mx-0">
+          <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-6 lg:gap-4 bg-surface/40 dark:bg-black/20 p-5 sm:p-6 lg:px-10 rounded-3xl lg:rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-sm w-full backdrop-blur-sm">
+            <!-- Location & Socials -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 w-full lg:w-auto">
+              <!-- Location -->
+              <div class="flex items-center gap-2.5 text-text-muted font-medium text-sm sm:text-base flex-shrink-0">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span>{profile.location}</span>
+              </div>
+              
+              <!-- Divider -->
+              <div class="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-700 flex-shrink-0"></div>
+              
+              <!-- Social Icons -->
+              <div class="flex flex-row items-center justify-center gap-4 sm:gap-5">
+                {profile.email && (
+                  <a href={`mailto:${profile.email}`}
+                    class="flex items-center justify-center w-11 h-11 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-primary transition-all duration-300 transform hover:scale-110 shrink-0 shadow-sm hover:shadow-lg group text-gray-600 dark:text-gray-300"
+                    aria-label={`Email ${profile.name}`} title={`Email: ${profile.email}`}>
+                    <svg class="w-5 h-5 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                     </svg>
-                  )}
-                  
-                  {platform.icon === 'linkedin' && (
-                    <svg class="w-6 h-6 transition-colors duration-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                  )}
-                  
-                  {platform.icon === 'twitter' && (
-                    <svg class="w-6 h-6 transition-colors duration-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                    </svg>
-                  )}
-                  
-                  {platform.icon === 'scholar' && (
-                    <svg class="w-6 h-6 transition-colors duration-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/>
-                    </svg>
-                  )}
-                </a>
-              ))}
+                  </a>
+                )}
+                {activeSocialLinks.map((platform) => (
+                  <a href={`${platform.baseUrl}${platform.value}`} target="_blank" rel="noopener noreferrer"
+                    class={`flex items-center justify-center w-11 h-11 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-primary transition-all duration-300 transform hover:scale-110 shrink-0 shadow-sm hover:shadow-lg ${platform.color} group text-gray-600 dark:text-gray-300 hover:text-white`}
+                    aria-label={`Visit ${profile.name}'s ${platform.name} profile`} title={`${platform.name}: ${platform.value}`}
+                    set:html={
+                      platform.icon === 'github' ? `<svg class="w-5 h-5 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>` :
+                      platform.icon === 'linkedin' ? `<svg class="w-5 h-5 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>` :
+                      `<svg class="w-5 h-5 transition-colors group-hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>`
+                    }
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-
-        <!-- Call to Action -->
-        <div class="animate-slide-up animate-stagger-6">
-          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-6">
-            <a
-              href={`mailto:${profile.email}`}
-              class="btn btn-primary w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 min-h-[48px] touch-manipulation"
-            >
-              Get In Touch
-            </a>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-secondary w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 min-h-[48px] touch-manipulation"
-            >
-              Download Resume
-            </a>
-            <a
-              href="#experience"
-              class="btn btn-secondary w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300 min-h-[48px] touch-manipulation"
-            >
-              View Experience
+            
+            <!-- Resume Button -->
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer"
+              class="inline-flex !flex-row items-center justify-center gap-3 px-8 sm:px-10 py-3.5 h-14 bg-primary text-white text-base sm:text-lg font-bold rounded-full shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] hover:shadow-[0_6px_20px_rgba(59,130,246,0.23)] hover:bg-blue-600 transform hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0"
+              style="white-space: nowrap; min-width: max-content;">
+              <span class="!inline-block">Resume</span>
+              <svg class="w-5 h-5 !inline-block flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
             </a>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-    <a
-      href="#experience"
-      class="flex flex-col items-center text-text-muted hover:text-primary transition-colors duration-300"
-      aria-label="Scroll to experience section"
-    >
-      <span class="text-xs mb-1">More</span>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
-    </a>
+      <!-- ===== 3. Recent Highlights (Order 3 on Mobile, Col 2 Row 2 on Desktop) ===== -->
+      <div class="order-3 lg:order-none lg:col-start-2 lg:row-start-2 w-full flex flex-col items-center pt-8 md:pt-12 lg:pt-0">
+        <div class="w-full max-w-[500px] sm:max-w-xl lg:max-w-md animate-slide-up animate-stagger-6 bg-white/40 dark:bg-[#0c1222]/80 backdrop-blur-2xl border border-white/40 dark:border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden group/card transform hover:-translate-y-1 transition-all duration-500 z-20 lg:mt-4">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+          <h3 class="text-xs sm:text-sm font-bold text-text uppercase tracking-widest mb-5 flex items-center justify-center lg:justify-start gap-2 relative z-20">
+            <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Recent Highlights
+          </h3>
+          <div class="relative z-20 overflow-hidden">
+            <div class="absolute left-[19px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-primary/30 via-accent/20 to-transparent dark:from-primary/20 dark:via-accent/10 dark:to-transparent"></div>
+            <ul class="text-left space-y-6 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar relative">
+              {recentHighlights.map((item, index) => (
+                <li class="flex items-start gap-4 group/item">
+                  <div class="flex-shrink-0 relative z-10">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-100 dark:border-gray-700 group-hover/item:scale-110 group-hover/item:border-primary/50 transition-all duration-300" set:html={item.icon} />
+                  </div>
+                  <div class="flex flex-col gap-0.5 pt-0.5">
+                    <span class="text-[10px] uppercase tracking-widest font-bold text-primary/70">{item.date}</span>
+                    <p class="text-sm text-text-muted leading-relaxed group-hover/item:text-text transition-colors duration-300" set:html={item.html}></p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 <style>
-  /* Typewriter effect */
+  /* Base visibility for all elements to prevent "disappearing" bugs */
+  .animate-fade-in,
+  .animate-slide-up,
+  [class*="animate-stagger-"] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  /* Typewriter effect cursor */
   .typewriter {
     display: inline-block;
     border-right: 2px solid var(--color-primary);
     animation: blink 1s infinite;
+  }
+
+  /* Custom Scrollbar for Highlights */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 4px;
+  }
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
   }
 
   @keyframes blink {
@@ -264,147 +320,69 @@ const activeSocialLinks = socialPlatforms.filter(platform => {
     51%, 100% { border-color: transparent; }
   }
 
-  /* Enhanced animations for reduced motion users */
-  @media (prefers-reduced-motion: reduce) {
-    .typewriter {
-      border-right: none;
-      animation: none;
+  /* Reveal Animations - only for those who don't prefer reduced motion */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-slide-up {
+      opacity: 0;
+      animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-fade-in {
+      opacity: 0;
+      animation: fadeInScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .animate-stagger-1 { animation-delay: 0.1s; }
+    .animate-stagger-2 { animation-delay: 0.2s; }
+    .animate-stagger-3 { animation-delay: 0.3s; }
+    .animate-stagger-4 { animation-delay: 0.4s; }
+    .animate-stagger-5 { animation-delay: 0.5s; }
+    .animate-stagger-6 { animation-delay: 0.6s; }
+  }
+
+  /* Mobile-specific Hero Adjustments */
+  @media (max-width: 1023px) {
+    #hero {
+      height: auto !important;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 6rem;
+      padding-bottom: 4rem;
     }
     
-    .animate-bounce {
-      animation: none;
+    /* Force visibility on mobile to avoid any flicker/delay */
+    .animate-slide-up, .animate-fade-in {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
     }
   }
 
   /* Gradient background animation */
   .bg-gradient-to-br {
     background-size: 400% 400%;
-    animation: gradientShift 8s ease infinite;
+    animation: gradientShift 12s ease infinite;
   }
 
   @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .bg-gradient-to-br {
-      animation: none;
-    }
-  }
-
-  /* Ensure Hero is always visible on mobile */
-  @media (max-width: 768px) {
-    #hero {
-      display: flex !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      min-height: 100vh !important;
-    }
-    
-    /* Light mode background */
-    html:not(.dark) #hero {
-      background: white !important;
-    }
-    
-    /* Dark mode background - more specific selectors */
-    html.dark #hero,
-    .dark #hero,
-    body.dark #hero {
-      background: #0f172a !important;
-    }
-    
-    .typewriter,
-    .rotating-title,
-    .animate-fade-in,
-    .animate-slide-up,
-    .animate-stagger-1,
-    .animate-stagger-2,
-    .animate-stagger-3,
-    .animate-stagger-4,
-    .animate-stagger-5,
-    .animate-stagger-6 {
-      opacity: 1 !important;
-      transform: none !important;
-      animation: none !important;
-      display: block !important;
-      visibility: visible !important;
-    }
-    
-    /* Ensure text is visible in light mode */
-    html:not(.dark) #hero h1,
-    html:not(.dark) #hero h2,
-    html:not(.dark) #hero p,
-    html:not(.dark) #hero span {
-      color: #1e293b !important;
-    }
-    
-    /* Ensure text is visible in dark mode */
-    html.dark #hero h1,
-    html.dark #hero h2,
-    html.dark #hero p,
-    html.dark #hero span,
-    .dark #hero h1,
-    .dark #hero h2,
-    .dark #hero p,
-    .dark #hero span,
-    body.dark #hero h1,
-    body.dark #hero h2,
-    body.dark #hero p,
-    body.dark #hero span {
-      color: #f1f5f9 !important;
-    }
-  }
-
-  /* Protect social media icons from cleanup */
-  #hero a[target="_blank"],
-  #hero svg,
-  .social-link,
-  .group {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* Additional mobile dark mode fixes */
-  @media (max-width: 768px) {
-    /* Force background colors with higher specificity */
-    body:not(.dark) #hero,
-    html:not(.dark) body #hero {
-      background: white !important;
-      background-color: white !important;
-    }
-    
-    body.dark #hero,
-    html.dark body #hero,
-    .dark body #hero {
-      background: #0f172a !important;
-      background-color: #0f172a !important;
-    }
-    
-    /* Force text colors with higher specificity */
-    body:not(.dark) #hero *,
-    html:not(.dark) body #hero * {
-      color: #1e293b !important;
-    }
-    
-    body.dark #hero *,
-    html.dark body #hero *,
-    .dark body #hero * {
-      color: #f1f5f9 !important;
-    }
-    
-    /* Ensure the section itself has proper background */
-    #hero.bg-gradient-to-br {
-      background: inherit !important;
-    }
+  /* Interaction Protection */
+  #hero a, #hero button {
+    position: relative;
+    z-index: 30;
   }
 </style>
 

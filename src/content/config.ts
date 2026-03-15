@@ -93,6 +93,15 @@ const educationSchema = z.object({
   })).optional(),
 });
 
+const newsSchema = z.object({
+  items: z.array(z.object({
+    text: z.string(),
+    date: z.string(),
+    icon: z.enum(['award', 'hackathon', 'publication', 'project', 'news']),
+    iconColor: z.string().optional(),
+  }))
+});
+
 // Collections using the defined schemas
 const profileCollection = defineCollection({
   type: 'content',
@@ -124,6 +133,11 @@ const educationCollection = defineCollection({
   schema: educationSchema,
 });
 
+const newsCollection = defineCollection({
+  type: 'data',
+  schema: newsSchema,
+});
+
 // Export collections
 export const collections = {
   profile: profileCollection,
@@ -132,6 +146,7 @@ export const collections = {
   publications: publicationsCollection,
   experience: experienceCollection,
   education: educationCollection,
+  news: newsCollection,
 };
 
 // Export schema types for use in components

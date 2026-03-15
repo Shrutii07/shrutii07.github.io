@@ -180,33 +180,42 @@ const getTagColor = (tag: string): string => {
       {title}
     </h3>
     
-    <!-- Award Badge -->
-    {(award || paper) && (
-      <div class="flex flex-wrap items-center gap-2 mb-2">
-        {award && (
-          <span class="inline-flex items-center px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-sm">
-            {award}
-          </span>
+    <!-- Award Badge & Context -->
+    {(award || paper || hackathon || venue || teamSize) && (
+      <div class="flex flex-col gap-1.5 mb-2.5">
+        {(award || paper) && (
+          <div class="flex flex-wrap items-center gap-2">
+            {award && (
+              <span class="inline-flex items-center px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-sm">
+                {award}
+              </span>
+            )}
+            {paper && (
+              <span class="inline-flex items-center px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-full shadow-sm">
+                📄 Published
+              </span>
+            )}
+          </div>
         )}
-        {paper && (
-          <span class="inline-flex items-center px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-full shadow-sm">
-            📄 Published
-          </span>
-        )}
-        {hackathon && (
-          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">
-            {hackathon}
-          </span>
-        )}
-        {venue && (
-          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">
-            {venue}
-          </span>
-        )}
-        {teamSize && (
-          <span class="text-xs text-gray-500 dark:text-gray-500">
-            Team of {teamSize}
-          </span>
+        
+        {(hackathon || venue || teamSize) && (
+          <div class="flex flex-wrap items-center gap-2">
+            {hackathon && (
+              <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                {hackathon}
+              </span>
+            )}
+            {venue && (
+              <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                {venue}
+              </span>
+            )}
+            {teamSize && (
+              <span class="text-xs text-gray-500 dark:text-gray-500">
+                Team of {teamSize}
+              </span>
+            )}
+          </div>
         )}
       </div>
     )}

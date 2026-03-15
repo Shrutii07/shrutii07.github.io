@@ -561,11 +561,9 @@ body > div:not([class]):not([id]) {
   
   /* Ensure hero section is always visible */
   #hero,
-  #hero *,
   #hero a[target="_blank"],
   #hero svg,
   .social-link {
-    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
@@ -575,7 +573,6 @@ body > div:not([class]):not([id]) {
   a[href*="linkedin.com"],
   a[href*="twitter.com"],
   a[href*="scholar.google.com"] {
-    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
@@ -924,25 +921,13 @@ MOBILE-FIRST RESPONSIVE IMPROVEMENTS ===== */
 @media (max-width: 640px) {
   /* Ensure Hero section is always visible on mobile */
   #hero {
-    display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
-    min-height: 100vh !important;
   }
   
   #hero * {
-    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-  }
-  
-  #hero .flex {
-    display: flex !important;
-  }
-  
-  #hero .flex-col {
-    display: flex !important;
-    flex-direction: column !important;
   }
   
   /* Ensure dark mode works on mobile - more specific selectors */

@@ -1,6 +1,17 @@
 ---
 // Header.astro - Fixed navigation header with smooth scroll links and mobile menu
 import ThemeToggle from '../ui/ThemeToggle.astro';
+
+const navItems = [
+  { name: 'Home', section: 'hero' },
+  { name: 'Experience', section: 'experience' },
+  { name: 'Projects', section: 'projects' },
+  { name: 'Publications', section: 'publications' },
+  { name: 'Education', section: 'education' },
+  { name: 'Achievements', section: 'achievements' },
+  { name: 'Skills', section: 'skills' },
+  { name: 'Contact', section: 'contact' },
+];
 ---
 
 <header 
@@ -24,56 +35,16 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
       <!-- Desktop Navigation -->
       <div class="hidden md:block">
-        <div class="ml-10 flex items-baseline space-x-8">
-          <a 
-            href="#hero" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="hero"
-          >
-            Home
-          </a>
-          <a 
-            href="#experience" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="experience"
-          >
-            Experience
-          </a>
-          <a 
-            href="#education" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="education"
-          >
-            Education
-          </a>
-          <a 
-            href="#projects" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="projects"
-          >
-            Projects
-          </a>
-          <a 
-            href="#skills" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="skills"
-          >
-            Skills
-          </a>
-          <a 
-            href="#publications" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="publications"
-          >
-            Publications
-          </a>
-          <a 
-            href="#contact" 
-            class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium"
-            data-section="contact"
-          >
-            Contact
-          </a>
+        <div class="ml-10 flex items-baseline space-x-6 lg:space-x-8">
+          {navItems.map((item) => (
+            <a 
+              href={`#${item.section}`}
+              class="nav-link text-text-muted hover:text-primary transition-colors duration-300 font-medium whitespace-nowrap"
+              data-section={item.section}
+            >
+              {item.name}
+            </a>
+          ))}
         </div>
       </div>
 
@@ -123,55 +94,15 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       class="md:hidden overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0"
     >
       <div class="px-2 pt-2 pb-3 space-y-1 bg-surface bg-opacity-50 backdrop-blur-sm rounded-lg mt-2 border border-gray-200 dark:border-gray-700">
-        <a 
-          href="#hero" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="hero"
-        >
-          Home
-        </a>
-        <a 
-          href="#experience" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="experience"
-        >
-          Experience
-        </a>
-        <a 
-          href="#education" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="education"
-        >
-          Education
-        </a>
-        <a 
-          href="#projects" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="projects"
-        >
-          Projects
-        </a>
-        <a 
-          href="#skills" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="skills"
-        >
-          Skills
-        </a>
-        <a 
-          href="#publications" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="publications"
-        >
-          Publications
-        </a>
-        <a 
-          href="#contact" 
-          class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
-          data-section="contact"
-        >
-          Contact
-        </a>
+        {navItems.map((item) => (
+          <a 
+            href={`#${item.section}`}
+            class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-muted hover:text-primary hover:bg-surface transition-all duration-300"
+            data-section={item.section}
+          >
+            {item.name}
+          </a>
+        ))}
       </div>
     </div>
   </nav>

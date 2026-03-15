@@ -9,5 +9,6 @@ featured: true
 startDate: "2026-02"
 endDate: "2026-03"
 tags: ["Agentic AI", "ElevenLabs Voice", "multiMentalRoBERTa", "XGBoost", "Databricks"]
+award: "🏆 Databricks Award"
 hackathon: "Hacklytics 2026: Golden Byte"
 ---
