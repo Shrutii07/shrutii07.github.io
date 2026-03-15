@@ -5,6 +5,7 @@ export interface Props {
   image: string;
   github?: string;
   demo?: string;
+  video?: string;
   tags: string[];
   index?: number;
   award?: string;
@@ -16,9 +17,10 @@ export interface Props {
   accuracy?: string;
   f1Score?: string;
   precision?: string;
+  tableau?: string;
 }
 
-const { title, description, image, github, demo, tags, award, hackathon, teamSize, paper, venue, accuracy, f1Score, precision } = Astro.props;
+const { title, description, image, github, demo, video, tags, award, hackathon, teamSize, paper, venue, accuracy, f1Score, precision, tableau } = Astro.props;
 
 // Tag color mapping for different technologies
 const tagColors: Record<string, string> = {
@@ -122,6 +124,21 @@ const getTagColor = (tag: string): string => {
             </a>
           )}
 
+          {video && (
+            <a
+              href={video}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-xs sm:text-sm min-h-[36px] touch-manipulation"
+              aria-label={`View ${title} video walkthrough`}
+            >
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              <span class="hidden xs:inline">Video</span>
+            </a>
+          )}
+
           {paper && (
             <a
               href={paper}
@@ -134,6 +151,21 @@ const getTagColor = (tag: string): string => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg>
               <span class="hidden xs:inline">Paper</span>
+            </a>
+          )}
+
+          {tableau && (
+            <a
+              href={tableau}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium text-xs sm:text-sm min-h-[36px] touch-manipulation"
+              aria-label={`View ${title} Tableau dashboard`}
+            >
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              <span class="hidden xs:inline">Dashboard</span>
             </a>
           )}
         </div>

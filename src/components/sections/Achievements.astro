@@ -1,0 +1,331 @@
+---
+// Achievements Carousel Section
+// Continuous auto-scrolling carousel with hover pause and manual navigation
+
+interface Achievement {
+  image: string;
+  title: string;
+  subtitle?: string;
+}
+
+const achievements: Achievement[] = [
+  { image: "/images/achievements/acad.jpg", title: "Academic Excellence Awards" },
+  { image: "/images/achievements/mscodetogive.jpg", title: "2nd Place — Morgan Stanley Code to Give", subtitle: "JobBuddy: AI-Driven Talent Acquisition, Alpharetta 2024" },
+  { image: "/images/achievements/hacklytics.jpg", title: "Hacklytics 2026: Golden Byte", subtitle: "MoodLens: Multi-Modal Depression Screening, Georgia Tech" },
+  { image: "/images/achievements/Reliance_News.jpg", title: "Represented VNIT at Reliance Power", subtitle: "1st Prize — Presentation on Energy Conservation" },
+  { image: "/images/achievements/ieee.jpg", title: "Volunteer at IEEE VNIT Chapter", subtitle: "Workshops on Machine Learning, Python, Micro-Controllers" },
+  { image: "/images/achievements/prayaas.jpg", title: "Volunteer at Blood Donation Camp", subtitle: "Prayaas Social Club, VNIT" },
+  { image: "/images/achievements/openday.JPG", title: "Open House at IvLabs", subtitle: "Showcasing Robotics Research & Projects" },
+  { image: "/images/achievements/women.jpg", title: "Women Awareness Play", subtitle: "Halla Bol Dramatic Club, VNIT" },
+  { image: "/images/achievements/crepido.png", title: "Winner of CREPIDO", subtitle: "1st Prize — Popsicle Bridge Design, AXIS'19 VNIT (200kg+ load)" },
+  { image: "/images/achievements/roboquiz.jpeg", title: "Runner-Up of Roboquiz 2.0", subtitle: "2nd Prize — Robotics Quiz by ROBOTIX Club, NIT Raipur" },
+  { image: "/images/achievements/top.jpeg", title: "HSSC District Topper" },
+  { image: "/images/achievements/10.jpg", title: "SSC School Topper (CBSE)" }
+];
+
+// Duplicate items for seamless infinite scroll
+const duplicatedAchievements = [...achievements, ...achievements];
+---
+
+<section id="achievements" class="py-12 sm:py-16 md:py-20 bg-background overflow-hidden">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <!-- Section Header -->
+    <div class="text-center mb-8 sm:mb-12">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text mb-3">
+        Achievements
+      </h2>
+    </div>
+  </div>
+
+  <!-- Full-width carousel (no container constraint) -->
+  <div class="carousel-wrapper relative group">
+    <!-- Left fade -->
+    <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-24 z-10 pointer-events-none bg-gradient-to-r from-background to-transparent"></div>
+    <!-- Right fade -->
+    <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-24 z-10 pointer-events-none bg-gradient-to-l from-background to-transparent"></div>
+
+    <!-- Navigation Arrows -->
+    <button
+      class="carousel-prev absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110 opacity-0 group-hover:opacity-100"
+      aria-label="Previous"
+    >
+      <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+
+    <button
+      class="carousel-next absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110 opacity-0 group-hover:opacity-100"
+      aria-label="Next"
+    >
+      <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+
+    <!-- Carousel Track -->
+    <div class="carousel-track-container overflow-hidden">
+      <div class="carousel-track flex" data-item-count={achievements.length}>
+        {duplicatedAchievements.map((achievement, index) => (
+          <div class="carousel-item flex-shrink-0 px-2 sm:px-3" data-index={index % achievements.length}>
+            <div class="achievement-card relative bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden group/card cursor-pointer">
+              <!-- Image -->
+              <div class="relative aspect-[3/2] overflow-hidden">
+                <img
+                  src={achievement.image}
+                  alt={achievement.title}
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80 group-hover/card:opacity-90 transition-opacity duration-300"></div>
+
+                <!-- Text Overlay -->
+                <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-5 transform transition-transform duration-300 group-hover/card:translate-y-0">
+                  <h3 class="text-white font-bold text-sm sm:text-base leading-tight mb-1 drop-shadow-lg">
+                    {achievement.title}
+                  </h3>
+                  {achievement.subtitle && (
+                    <p class="text-white/80 text-xs sm:text-sm leading-snug drop-shadow-md">
+                      {achievement.subtitle}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .carousel-item {
+    width: 94%;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-item {
+      width: 65%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .carousel-item {
+      width: 52%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-item {
+      width: 44%;
+    }
+  }
+
+  .carousel-track {
+    will-change: transform;
+  }
+
+  /* Smooth continuous scroll animation */
+  .carousel-track.animating {
+    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .carousel-track.scrolling {
+    transition: none;
+  }
+
+  /* Card hover effects */
+  .achievement-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .achievement-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 
+      0 20px 40px -12px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .dark .achievement-card:hover {
+    box-shadow: 
+      0 20px 40px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Touch devices: always show arrows */
+  @media (hover: none) {
+    .carousel-prev,
+    .carousel-next {
+      opacity: 1 !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+      transition: none !important;
+    }
+    .carousel-track.animating {
+      transition: transform 0.1s linear !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    const items = document.querySelectorAll('.carousel-item');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+
+    if (!track || items.length === 0) return;
+
+    const totalOriginal = parseInt(track.dataset.itemCount || '0');
+    if (totalOriginal === 0) return;
+
+    let currentOffset = 0;
+    let autoScrollRAF: number;
+    let isPaused = false;
+    let isDragging = false;
+    let startX = 0;
+    let scrollStart = 0;
+    const scrollSpeed = 0.5; // pixels per frame
+
+    function getItemWidth(): number {
+      return (items[0] as HTMLElement).offsetWidth;
+    }
+
+    function getTotalWidth(): number {
+      return getItemWidth() * totalOriginal;
+    }
+
+    // Seamless loop: when we've scrolled past all original items, reset
+    function normalizeOffset() {
+      const totalW = getTotalWidth();
+      if (currentOffset <= -totalW) {
+        currentOffset += totalW;
+        track.classList.add('scrolling');
+        track.style.transform = `translateX(${currentOffset}px)`;
+        // Force reflow
+        track.offsetHeight;
+        track.classList.remove('scrolling');
+      } else if (currentOffset > 0) {
+        currentOffset -= totalW;
+        track.classList.add('scrolling');
+        track.style.transform = `translateX(${currentOffset}px)`;
+        track.offsetHeight;
+        track.classList.remove('scrolling');
+      }
+    }
+
+    // Continuous auto-scroll
+    function autoScroll() {
+      if (!isPaused && !isDragging) {
+        currentOffset -= scrollSpeed;
+        normalizeOffset();
+        track.classList.add('scrolling');
+        track.style.transform = `translateX(${currentOffset}px)`;
+      }
+      autoScrollRAF = requestAnimationFrame(autoScroll);
+    }
+
+    // Manual navigation
+    function slideBy(direction: number) {
+      const itemW = getItemWidth();
+      const targetOffset = currentOffset + (direction * itemW);
+
+      track.classList.remove('scrolling');
+      track.classList.add('animating');
+      currentOffset = targetOffset;
+      track.style.transform = `translateX(${currentOffset}px)`;
+
+      setTimeout(() => {
+        track.classList.remove('animating');
+        normalizeOffset();
+      }, 500);
+    }
+
+    // Button clicks
+    prevBtn?.addEventListener('click', () => slideBy(1));
+    nextBtn?.addEventListener('click', () => slideBy(-1));
+
+    // Pause on hover
+    const wrapper = document.querySelector('.carousel-wrapper');
+    wrapper?.addEventListener('mouseenter', () => { isPaused = true; });
+    wrapper?.addEventListener('mouseleave', () => { isPaused = false; });
+
+    // Touch/drag support
+    let touchStartX = 0;
+    let touchCurrentX = 0;
+    let hasMoved = false;
+
+    track.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      hasMoved = false;
+      startX = e.pageX;
+      scrollStart = currentOffset;
+      track.classList.add('scrolling');
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      hasMoved = true;
+      const diff = e.pageX - startX;
+      currentOffset = scrollStart + diff;
+      track.style.transform = `translateX(${currentOffset}px)`;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('scrolling');
+      normalizeOffset();
+    });
+
+    // Touch events
+    track.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      hasMoved = false;
+      startX = e.touches[0].pageX;
+      scrollStart = currentOffset;
+      track.classList.add('scrolling');
+    }, { passive: true });
+
+    track.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      hasMoved = true;
+      const diff = e.touches[0].pageX - startX;
+      currentOffset = scrollStart + diff;
+      track.style.transform = `translateX(${currentOffset}px)`;
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+      isDragging = false;
+      track.classList.remove('scrolling');
+      normalizeOffset();
+    });
+
+    // Prevent click events after drag
+    track.addEventListener('click', (e) => {
+      if (hasMoved) e.preventDefault();
+    });
+
+    // Keyboard navigation
+    const section = document.getElementById('achievements');
+    section?.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') slideBy(1);
+      if (e.key === 'ArrowRight') slideBy(-1);
+    });
+
+    // Start auto-scroll
+    autoScrollRAF = requestAnimationFrame(autoScroll);
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      cancelAnimationFrame(autoScrollRAF);
+    });
+  });
+</script>

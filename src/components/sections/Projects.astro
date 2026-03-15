@@ -38,7 +38,9 @@ try {
           teamSize: data.teamSize,
           paper: data.paper,
           paperTitle: data.paperTitle,
-          venue: data.venue
+          venue: data.venue,
+          tableau: data.tableau,
+          video: data.video
         };
       })
       .filter((project): project is NonNullable<typeof project> => project !== null)
@@ -201,6 +203,8 @@ const contentStats = {
               paper={project.paper}
               paperTitle={project.paperTitle}
               venue={project.venue}
+              tableau={project.tableau}
+              video={project.video}
             />
           ))}
         </div>
@@ -225,6 +229,8 @@ const contentStats = {
                   paper={project.paper}
                   paperTitle={project.paperTitle}
                   venue={project.venue}
+                  tableau={project.tableau}
+                  video={project.video}
                 />
               ))}
             </div>
@@ -247,6 +253,8 @@ const contentStats = {
                     paper={project.paper}
                     paperTitle={project.paperTitle}
                     venue={project.venue}
+                    tableau={project.tableau}
+                    video={project.video}
                   />
                 ))}
               </div>

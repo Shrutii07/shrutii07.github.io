@@ -5,7 +5,6 @@ image: "images/projects/Suntracker.png"
 github: "https://github.com/Shrutii07/Suntracker-on-Mobile-Robot"
 demo: "https://www.youtube.com/watch?v=CTdRMOJmFSw"
 featured: false
-order: 1
 tags: ["C++", "CAD-modelling", "3D-printing", "Arduino IDE"]
 startDate: "2020-04"
 endDate: "2020-06"

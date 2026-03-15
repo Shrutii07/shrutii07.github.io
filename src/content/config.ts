@@ -37,6 +37,7 @@ const projectSchema = z.object({
   image: z.string(),
   github: z.string().url().optional(),
   demo: z.string().url().optional(),
+  video: z.string().url().optional(),
   featured: z.boolean().default(false),
   order: z.number().default(0),
   tags: z.array(z.string()),
@@ -48,6 +49,7 @@ const projectSchema = z.object({
   paper: z.string().url().optional(),
   paperTitle: z.string().optional(),
   venue: z.string().optional(),
+  tableau: z.string().url().optional(),
 });
 
 const publicationSchema = z.object({

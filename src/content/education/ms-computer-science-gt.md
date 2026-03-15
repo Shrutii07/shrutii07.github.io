@@ -7,12 +7,13 @@ endDate: "2026-05"
 location: "Atlanta, GA"
 logo: "images/education/gt-logo.svg"
 gpa: "3.8/4.0"
-honors: ["Graduate Teacher Assistant (Natural Language Processing)"]
+honors: ["Graduate Teacher Assistant (Natural Language Processing)", "Graduate Teacher Assistant (Machine Learning)"]
 coursework: 
   - "CS 7643: Deep Learning"
   - "CSE 6220: High Performance Computing"
   - "CS 8803: Hardware Software Codesign for ML"
   - "CSE 6242: Data and Visual Analytics"
   - "CSE 6740: Computational Data Analysis"
+  - "MGT 8803: AI for Finance"
 ---
 

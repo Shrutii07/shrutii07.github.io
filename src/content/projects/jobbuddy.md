@@ -1,12 +1,11 @@
 ---
-title: "JobBuddy: AI-Driven Similarity Scoring for Optimal Talent Acquisition"
-description: "JobBuddy is an intelligent career platform designed to optimize the hiring process through advanced machine learning. The system analyzes raw text from uploaded resumes and posted job descriptions, using BERT Tokenization to generate dense semantic embeddings. This allows the platform to move beyond keyword matching and understand the true contextual meaning of the documents. The core functionality relies on calculating the Cosine Similarity between candidate and job vectors, generating a highly accurate match score. This score powers bi-directional ranking: candidates receive personalized job recommendations, and employers are presented with the best-fit candidates for their roles. The platform is supported by a Java Spring Backend and a React/Vue.js Frontend, ensuring a fast, scalable, and user-friendly experience."
+title: "JobBuddy: AI-Driven Scoring for Optimal Talent Acquisition"
+description: "Traditional job matching relies on keyword overlap — a fundamentally broken approach that misses qualified candidates who describe their experience differently. JobBuddy replaces this with semantic understanding. The platform ingests raw resumes and job descriptions, runs them through BERT Tokenization to produce dense contextual embeddings, then scores compatibility via Cosine Similarity between candidate and job vectors. The result is bi-directional ranking: candidates see jobs ranked by true fit, employers see applicants ranked by actual relevance — not keyword density. Built on a Java Spring microservices backend with React frontend and Firebase authentication, the entire platform was designed and shipped in 24 hours at Morgan Stanley's Code to Give Hackathon."
 image: "images/projects/jobbuddy.png"
 github: "https://github.com/sohampati/alpfa-team2"
 demo: "https://youtu.be/8MTsYDtZXyc?si=uQpbFpJ91AmgaRK8"
 featured: true
-order: 1
-tags: ["Java", "Spring", "React", "Firebase", "OAuth", "BERT Tokenization"]
+tags: ["BERT Tokenization", "Firebase", "OAuth", "Java", "Spring", "React"]
 startDate: "2024-09"
 endDate: "2024-09"
 award: "🏆 2nd Place Winner"
