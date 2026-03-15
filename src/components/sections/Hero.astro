@@ -147,7 +147,7 @@ const recentHighlights = (newsEntry?.data?.items || [])
   });
 ---
 
-<section id="hero" class="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 lg:pb-20 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
+<section id="hero" class="relative min-h-screen lg:min-h-fit flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-12 pb-12 sm:pb-16 lg:pb-16 bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-900">
   <!-- Neural Network Background -->
   <div class="neural-bg" id="neural-background"></div>
 
@@ -179,7 +179,7 @@ const recentHighlights = (newsEntry?.data?.items || [])
           <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold mb-4 leading-none tracking-[-0.04em]">
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-gray-500">{profile.name}</span>
           </h1>
-          <div class="relative h-14 sm:h-16 mb-8">
+          <div class="relative h-12 sm:h-14 mb-4">
             <h2 class="absolute top-0 left-0 w-full text-center lg:text-left text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight m-0">
               <span class="rotating-title text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent" data-titles='["ML Engineer", "AI Engineer", "Data Scientist", "Full Stack Developer", "ML Systems Engineer"]'>Software Engineer</span>
             </h2>
@@ -196,7 +196,7 @@ const recentHighlights = (newsEntry?.data?.items || [])
         </div>
 
         <!-- Action Dock -->
-        <div class="animate-slide-up animate-stagger-5 pt-8 w-full max-w-4xl mx-auto lg:mx-0">
+        <div class="animate-slide-up animate-stagger-5 pt-4 w-full max-w-4xl mx-auto lg:mx-0">
           <div class="flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-6 lg:gap-4 bg-surface/40 dark:bg-black/20 p-5 sm:p-6 lg:px-10 rounded-3xl lg:rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-sm w-full backdrop-blur-sm">
             <!-- Location & Socials -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 w-full lg:w-auto">
